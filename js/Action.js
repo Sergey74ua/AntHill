@@ -54,9 +54,10 @@ class Action {
         //ant.action=Action.wait;
     }
 
-    static grab(ant) { ///////////////////////
+    static grab(ant) {
         ant.timer=ant.getDelay(ant.delay*3);
         ant.run=false;
+        ant.aim=Colony;
         let food=Math.min(ant.target.weight, ant.life);
         ant.target.weight-=food;
         ant.load=new Food(ant.pos);
@@ -72,7 +73,10 @@ class Action {
     static back(ant) {
         ant.timer=ant.getDelay(ant.delay*5);
         ant.run=true;
-        ant.aim=Colony;
+        if (ant.load instanceof Food)
+            ant.aim=Colony;
+        else
+            ant.aim=constructor;
         ant.target={pos: model.rndPos(this.pos, this.range)};
         ant.angle=ant.getAngle(ant.pos, ant.target);
     }

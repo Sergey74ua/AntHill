@@ -39,6 +39,12 @@ class Ant {
                 model.vision(this);
                 this.ai.select(this);
                 this.action(this);
+                console.log( ///////////////////////////////
+                    'АКТ', this.action.name,
+                    'ЦЕЛЬ', this.aim.name,
+                    'ПРИЦЕЛ', this.target.name,
+                    'ТАРГЕТ', this.target
+                );
             }
         //Движение лапок
         if (this.run)

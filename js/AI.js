@@ -23,7 +23,7 @@ class PI { //////////////////////////////
         else if (!(ant.load instanceof Food) && (ant.target instanceof Food) && model.delta(ant.pos, ant.target)<(ant.speed*3))
             ant.action=Action.grab;
         //Подход - если виден корм или муравейник
-        else if (ant.target instanceof Food || ant.target instanceof Colony || ant.target instanceof Rock)
+        else if (ant.target instanceof ant.aim)
             ant.action=Action.move;
         //Возврат - если есть корм
         else if (ant.load)
