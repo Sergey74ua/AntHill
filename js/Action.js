@@ -54,36 +54,34 @@ class Action {
         //ant.action=Action.wait;
     }
 
-    static grab(ant) {
+    static grab(ant) { ///////////////////////
         ant.timer=ant.getDelay(ant.delay*3);
         ant.run=false;
-        let food=Math.min(0, ant.life);
-        //забрать корм с точки,
-        ant.food=food;
-        ant.angle=ant.getAngle(ant.pos, ant.target);
+        let food=Math.min(ant.target.weight, ant.life);
+        ant.target.weight-=food;
+        ant.load=new Food(ant.pos);
         ant.score+=50;
     }
 
-    static move(ant) { ///////////////////////
-        ant.timer=ant.getDelay(ant.delay); //// тут должна быть проверка на близость
+    static move(ant) {
+        ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed);
         ant.run=true;
-        ant.angle=ant.getAngle(ant.pos, ant.target.pos);
-        if (Math.sqrt(Math.pow(ant.target.y-ant.pos.y, 2)+Math.pow(ant.target.y-ant.pos.y, 2))<=ant.speed) {
-            ant.action=Action.grab;
-        }
+        ant.angle=ant.getAngle(ant.pos, ant.target);
     }
 
     static back(ant) {
         ant.timer=ant.getDelay(ant.delay*5);
         ant.run=true;
-        ant.target=model.rndPos(ant.pos, ant.range);
+        ant.aim=Colony;
+        ant.target={pos: model.rndPos(this.pos, this.range)};
         ant.angle=ant.getAngle(ant.pos, ant.target);
     }
 
     static find(ant) {
         ant.timer=ant.getDelay(ant.delay*4);
         ant.run=true;
-        ant.target=model.rndPos(ant.pos, ant.range);
+        ant.aim=Food;
+        ant.target={pos: model.rndPos(this.pos, this.range)};
         ant.angle=ant.getAngle(ant.pos, ant.target);
     }
 
@@ -100,7 +98,7 @@ class Action {
 
     static flex(ant) {
         ant.timer=ant.getDelay(ant.delay*8);
-        ant.target=ant.pos;
+        ant.target.pos=ant.pos;
         ant.run=true;
     }
     

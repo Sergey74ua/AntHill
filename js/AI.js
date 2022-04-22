@@ -10,17 +10,20 @@ class RI {
 class PI { //////////////////////////////
     //Программируемый интеллект
     select(ant) {
+        //Смерть - если жизни нет
+        if (ant.life<=0)
+            ant.action=Action.dead;
         //Сброс - если есть корм и (рядом свой муравейник или тебя атакуют)
-        if (ant.food>0 && (false || ant.life<100)) //урон-?
+        else if (ant.load && ant.lose)
             ant.action=Action.drop;
         //Атака - если тебя атакуют и рядом чужой муравей
-        else if (ant.lose>0)  //урон-?
+        else if (ant.lose)
             ant.action=Action.kick;
         //Сбор - если нет корма и рядом корм
-        else if (ant.food<=0 && typeof(ant.target)==Food)
+        else if (!(ant.load instanceof Food) && (ant.target instanceof Food) && model.delta(ant.pos, ant.target)<(ant.speed*3))
             ant.action=Action.grab;
         //Подход - если виден корм или муравейник
-        else if (ant.target instanceof Food)
+        else if (ant.target instanceof Food || ant.target instanceof Colony || ant.target instanceof Rock)
             ant.action=Action.move;
         //Возврат - если есть корм
         else if (ant.load)
@@ -29,11 +32,8 @@ class PI { //////////////////////////////
         else if (!ant.load)
             ant.action=Action.find;
         //Обучение - если в контакте с союзником
-        else if (typeof(ant.target)==Ant && ant.target.score>ant.score)
+        else if (ant.target instanceof Ant && ant.target.score>ant.score)
             ant.action=Action.info;
-        //Смерть - если жизни нет
-        else if (ant.life<0)
-            ant.action=Action.dead;
         //Ожидание - все прочее
         else
             ant.action=Action.wait;

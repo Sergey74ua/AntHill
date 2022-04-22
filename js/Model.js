@@ -43,7 +43,7 @@ class Model {
             this.newRock(pos);
         }
         //Корм
-        for (let i=0; i<this.base*this.food*100; i++) {
+        for (let i=0; i<this.base*this.food*10; i++) {
             let pos=this.rndPos();
             this.newFood(pos);
         }
@@ -111,11 +111,8 @@ class Model {
         let sector=this.getSector(ant.pos, ant.range);
         for (let x=sector.left; x<sector.right; x++)
             for (let y=sector.top; y<sector.bottom; y++)
-                if (this.map[x][y] instanceof ant.aim) {
+                if (this.map[x][y] instanceof ant.aim)
                     ant.target=this.map[x][y];
-                    //если нет корма - добавть, а если есть, сравнить расстояния и выбрать ближайший
-                }
-                    
     }
 
     //Границы сектора
@@ -129,10 +126,10 @@ class Model {
     }
 
     //Расстояние до цели
-    /*delta(pos, target) {
-        return Math.sqrt(Math.pow(target.y-pos.y, 2)+Math.pow(target.y-pos.y, 2));
+    delta(pos, target) {
+        return Math.sqrt(Math.pow(target.pos.y-pos.y, 2)+Math.pow(target.pos.y-pos.y, 2));
     }
-    
+    /*
     //Размер игровой карты
     resize() {
         if (this.size.width<=canvas.width)

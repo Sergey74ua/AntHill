@@ -7,11 +7,11 @@ class Ant {
         this.pos=model.rndPos(colony.pos, 5);
         this.ai=colony.ai;
         //веса нейронов
-        this.aim=Food; ////
+        this.aim=constructor;
         this.score=0;
         this.life=100;
         this.lose=0;
-        this.load=false; //new Food(this.pos);
+        this.load=false;
         this.speed=1.0;
         this.range=32;
         this.step=5;
@@ -19,7 +19,7 @@ class Ant {
         this.pose=false;
         this.delay=30;
         this.timer=0;
-        this.target=model.rndPos(this.pos, this.range); //// Объект или цель???
+        this.target={pos: model.rndPos(this.pos, this.range)};
         this.angle=this.getAngle(this.pos, this.target);
         this.action=Action.wait;
     }
@@ -39,7 +39,6 @@ class Ant {
                 model.vision(this);
                 this.ai.select(this);
                 this.action(this);
-                console.log(this.action.name, this.timer); ///////////////
             }
         //Движение лапок
         if (this.run)
@@ -123,9 +122,9 @@ class Ant {
         ctx.shadowOffsetX=0;
         ctx.shadowOffsetY=0;
         //////////////////// ВРЕМЕННО - ОБЗОР ////////////////////
-        /*ctx.strokeStyle='Yellow';
+        ctx.strokeStyle='Yellow';
         ctx.lineWidth=0.5;
-        ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);*/
+        ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
     }
 
     //Смена шагов
@@ -145,7 +144,7 @@ class Ant {
 
     //Поворот на цель
     getAngle(pos, target) {
-        return Math.atan2(target.y-pos.y, target.x-pos.x)+Math.PI/2*0;
+        return Math.atan2(target.pos.y-pos.y, target.pos.x-pos.x)+Math.PI/2;
     }
 
     //Поворот на цель
@@ -153,7 +152,6 @@ class Ant {
         return Math.round(delay*0.667+Math.random()*delay*0.667);
     }
 }
-
 
 class Flyweight {
     //Статичные данные
