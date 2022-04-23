@@ -111,7 +111,7 @@ class Model {
         let sector=this.getSector(ant.pos, ant.range);
         for (let x=sector.left; x<sector.right; x++)
             for (let y=sector.top; y<sector.bottom; y++)
-                if (this.map[x][y] instanceof ant.aim)
+                if (this.map[x][y] instanceof ant.goal)
                     ant.target=this.map[x][y];
     }
 

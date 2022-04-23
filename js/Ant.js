@@ -7,7 +7,7 @@ class Ant {
         this.pos=model.rndPos(colony.pos, 5);
         this.ai=colony.ai;
         //веса нейронов
-        this.aim=constructor;
+        this.goal=constructor;
         this.score=0;
         this.life=100;
         this.lose=0;
@@ -41,7 +41,7 @@ class Ant {
                 this.action(this);
                 console.log( ///////////////////////////////
                     'АКТ', this.action.name,
-                    'ЦЕЛЬ', this.aim.name,
+                    'ЦЕЛЬ', this.goal.name,
                     'ПРИЦЕЛ', this.target.name,
                     'ТАРГЕТ', this.target
                 );

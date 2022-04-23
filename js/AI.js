@@ -7,14 +7,14 @@ class RI {
     }
 }
 
-class PI { //////////////////////////////
+class PI {
     //Программируемый интеллект
     select(ant) {
         //Смерть - если жизни нет
         if (ant.life<=0)
             ant.action=Action.dead;
         //Сброс - если есть корм и (рядом свой муравейник или тебя атакуют)
-        else if (ant.load && ant.lose)
+        else if (ant.load && (ant.lose || ant.goal instanceof Colony))
             ant.action=Action.drop;
         //Атака - если тебя атакуют и рядом чужой муравей
         else if (ant.lose)
@@ -23,7 +23,7 @@ class PI { //////////////////////////////
         else if (!(ant.load instanceof Food) && (ant.target instanceof Food) && model.delta(ant.pos, ant.target)<(ant.speed*3))
             ant.action=Action.grab;
         //Подход - если виден корм или муравейник
-        else if (ant.target instanceof ant.aim)
+        else if (ant.target instanceof ant.goal)
             ant.action=Action.move;
         //Возврат - если есть корм
         else if (ant.load)
@@ -40,7 +40,7 @@ class PI { //////////////////////////////
     }
 }
 
-class AI { //////////////////////////////
+class AI {
     //Искуственный интеллект (нейросеть)
     constructor() {
         input={
