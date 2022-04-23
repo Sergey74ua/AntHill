@@ -3,8 +3,8 @@
 class Model {
     //Базовая модель
     constructor() {
-        this.base=1;
-        this.food=1;
+        this.base=4;
+        this.food=256;
         this.size={
             width: window.innerWidth,
             height: window.innerHeight
@@ -38,12 +38,12 @@ class Model {
             this.map[pos.x][pos.y]=colony;
         }
         //Камни
-        for (let i=0; i<this.base*this.food*10; i++) {
+        for (let i=0; i<this.base*10; i++) {
             let pos=this.rndPos();
             this.newRock(pos);
         }
         //Корм
-        for (let i=0; i<this.base*this.food*10; i++) {
+        for (let i=0; i<this.base*20; i++) {
             let pos=this.rndPos();
             this.newFood(pos);
         }
@@ -127,7 +127,7 @@ class Model {
 
     //Расстояние до цели
     delta(pos, target) {
-        return Math.sqrt(Math.pow(target.pos.y-pos.y, 2)+Math.pow(target.pos.y-pos.y, 2));
+        return Math.sqrt(Math.pow(target.pos.x-pos.x, 2)+Math.pow(target.pos.y-pos.y, 2));
     }
     /*
     //Размер игровой карты

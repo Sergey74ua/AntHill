@@ -15,18 +15,18 @@ class Colony {
         this.color=this.getColor(i);
         this.ai=new PI();
         this.listAnt=[];
-        this.timer=120;
-        this.delay=Math.round(this.timer/4);
+        this.delay=200;
+        this.timer=Math.round(this.delay/4);
     }
 
     //Обновление
     update() {
         if (this.food>0)
-            this.delay--;
-            if (this.delay<0) {
+            this.timer--;
+            if (this.timer<0) {
                 this.listAnt.push(new Ant(this));
-                this.food--;
-                this.delay=this.timer;
+                this.food-=100;
+                this.timer=this.delay;
             }
     }
 
@@ -41,6 +41,14 @@ class Colony {
         ctx.arc(this.pos.x, this.pos.y, 32, 0, Math.PI*2);
         ctx.fill();
         ctx.closePath();
+
+        //////////////////////////  ВРЕМЕННО - ОБЗОР  /////////////////////////
+        ctx.textBaseline="middle";
+        ctx.textAlign="center";
+        ctx.fillStyle='White';
+        ctx.font="8pt Arial";
+		ctx.fillText(this.listAnt.length, this.pos.x, this.pos.y);
+        ///////////////////////////////////////////////////////////////////////
     }
     
     //Цвет колонии

@@ -13,11 +13,11 @@ class Ant {
         this.lose=0;
         this.load=false;
         this.speed=1.0;
-        this.range=32;
+        this.range=48;
         this.step=5;
         this.run=false;
         this.pose=false;
-        this.delay=30;
+        this.delay=24;
         this.timer=0;
         this.target={pos: model.rndPos(this.pos, this.range)};
         this.angle=this.getAngle(this.pos, this.target);
@@ -39,12 +39,6 @@ class Ant {
                 model.vision(this);
                 this.ai.select(this);
                 this.action(this);
-                console.log( ///////////////////////////////
-                    'АКТ', this.action.name,
-                    'ЦЕЛЬ', this.goal.name,
-                    'ПРИЦЕЛ', this.target.name,
-                    'ТАРГЕТ', this.target
-                );
             }
         //Движение лапок
         if (this.run)
@@ -127,10 +121,17 @@ class Ant {
         ctx.shadowBlur=0;
         ctx.shadowOffsetX=0;
         ctx.shadowOffsetY=0;
-        //////////////////// ВРЕМЕННО - ОБЗОР ////////////////////
-        ctx.strokeStyle='Yellow';
+
+        //////////////////////////  ВРЕМЕННО - ОБЗОР  /////////////////////////
+        /*ctx.strokeStyle='Lime';
         ctx.lineWidth=0.5;
-        ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
+        ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);*/
+        ctx.textBaseline="middle";
+        ctx.textAlign="center";
+        ctx.fillStyle='Yellow';
+        ctx.font="8pt Arial";
+		ctx.fillText(this.action.name+' '+this.score, x, y-16);
+        ///////////////////////////////////////////////////////////////////////
     }
 
     //Смена шагов
