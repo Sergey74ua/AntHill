@@ -46,6 +46,19 @@ class Food extends Items {
         this.color=Food.color;
         this.weight=Math.round(Math.random()*128)+128;
     }
+
+    //////////////////////////  ВРЕМЕННО - ОБЗОР  /////////////////////////
+    draw(ctx) {
+        if (this.weight>0) {
+            super.draw(ctx);
+            ctx.textBaseline="middle";
+            ctx.textAlign="center";
+            ctx.fillStyle='black';
+            ctx.font="6pt Arial";
+            ctx.fillText(this.weight, this.pos.x, this.pos.y-5);
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////
 }
 
 /* /////////////////////////////////////

@@ -58,8 +58,12 @@ class Action {
     static grab(ant) {
         ant.run=false;
         ant.goal=Colony;
-        ant.target.weight-=Math.min(ant.target.weight, ant.life);
+        let food=Math.min(ant.target.weight, Math.floor(ant.life*0.7+Math.random()*ant.life*0.3));
+        ant.target.weight-=food;
+        if (ant.target.weight<1)
+            model.delFood(ant);
         ant.load=new Food(ant.pos);
+        ant.load.weight=food;
         ant.score+=50;
         ant.timer=ant.getDelay(ant.delay*3);
     }

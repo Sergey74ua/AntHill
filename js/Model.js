@@ -76,6 +76,24 @@ class Model {
         this.map[food.pos.x][food.pos.y]=food;
     }
 
+    //Удаление корма
+    delFood(ant) {
+        //console.log(this.listFood.length); /////////////////
+        let listFood=[];
+        for (let food of this.listFood) {
+            if (food.weight>0)
+                listFood.push(food);
+            else {
+                this.map[food.pos.x][food.pos.y]=false;
+                delete ant.target; //// а что удаляет ссылка на food ?!
+            }
+        }
+        this.listFood=listFood;
+        /*this.map[ant.target.pos.x][ant.target.pos.y]=false;
+        this.listFood=this.listFood.filter(function(food) {return food.weight>0});
+        delete ant.target;*/
+    }
+
     //Добавление камня
     newRock(pos) { //Отдельная функция может и не нужна.
         let rock=new Rock(pos);
