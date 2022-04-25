@@ -36,6 +36,8 @@ class View {
         this.canvas.height=model.size.height;
         this.ctx=this.canvas.getContext('2d');
         this.ctx.shadowColor='Black';
+        this.ctx.textBaseline="middle";
+        this.ctx.textAlign="center";
         this.fw=new Flyweight();
     }
 }

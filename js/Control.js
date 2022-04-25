@@ -5,6 +5,7 @@ class Control {
     constructor() {
         this.game=true;
         this.focus=false;
+        this.info=false;
         this.fps=40;
         
         this.btnPlay=document.getElementById('play');
@@ -14,6 +15,7 @@ class Control {
 
         setInterval(() => this.update(), this.fps);
         onclick=(e) => this.onClick(e);
+        onkeydown=(e) => this.onKeyDown(e);
     }
 
     //Обновление
@@ -33,6 +35,19 @@ class Control {
             model.newFood(pos);
         }
         this.focus=false;
+    }
+
+    //Отслеживае клавиатуры
+    onKeyDown(e) {
+        e.preventDefault();
+		switch(e.keyCode) {
+			case 17: case 18:
+                this.info=!this.info;
+                break;
+            case 19: case 32:
+                this.play();
+                break;
+		}
     }
     
     //Кнопка старт/пауза

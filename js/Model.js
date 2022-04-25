@@ -32,21 +32,19 @@ class Model {
         }
         //Колонии
         for (let i=0; i<this.base; i++) {
-            let pos=this.rndPos();
-            let colony=new Colony(i, pos, this.food);
+            let colony=new Colony(i, this.rndPos(), this.food);
             this.listColony.push(colony);
-            this.map[pos.x][pos.y]=colony;
+            this.map[colony.pos.x][colony.pos.y]=colony;
         }
         //Камни
         for (let i=0; i<this.base*10; i++) {
-            let pos=this.rndPos();
-            this.newRock(pos);
+            let rock=new Rock(this.rndPos());
+            this.listRock.push(rock);
+            this.map[rock.pos.x][rock.pos.y]=rock;
         }
         //Корм
-        for (let i=0; i<this.base*20; i++) {
-            let pos=this.rndPos();
-            this.newFood(pos);
-        }
+        for (let i=0; i<this.base*20; i++)
+            this.newFood(this.rndPos());
     }
 
     //Обновление
@@ -94,22 +92,17 @@ class Model {
         delete ant.target;*/
     }
 
-    //Добавление камня
-    newRock(pos) { //Отдельная функция может и не нужна.
-        let rock=new Rock(pos);
-        this.listRock.push(rock);
-        this.map[rock.pos.x][rock.pos.y]=rock;
-    }
-
     //Случайная позиция
     rndPos(pos={x: 0, y: 0}, range=false) {
-        let sector=this.getSector(pos, range);
-        if (!range)
+        let sector;
+        if (range)
+            sector=this.getSector(pos, range);
+        else
             sector={
-                left: this.size.width*.05,
-                right: this.size.width*.95,
-                top: this.size.height*.05,
-                bottom: this.size.height*.95
+                left: this.size.width*0.05,
+                right: this.size.width*0.95,
+                top: this.size.height*0.05,
+                bottom: this.size.height*0.95
             };
         //Поиск свободных координат
         let collision=true;

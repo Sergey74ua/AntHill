@@ -41,14 +41,12 @@ class Colony {
         ctx.arc(this.pos.x, this.pos.y, 32, 0, Math.PI*2);
         ctx.fill();
         ctx.closePath();
-
-        //////////////////////////  ВРЕМЕННО - ОБЗОР  /////////////////////////
-        ctx.textBaseline="middle";
-        ctx.textAlign="center";
-        ctx.fillStyle='White';
-        ctx.font="8pt Arial";
-		ctx.fillText(this.listAnt.length, this.pos.x, this.pos.y);
-        ///////////////////////////////////////////////////////////////////////
+        //Информация
+        if (control.info) {
+            ctx.fillStyle='White';
+            ctx.font="8pt Arial";
+            ctx.fillText(this.listAnt.length, this.pos.x, this.pos.y);
+        }
     }
     
     //Цвет колонии
@@ -59,5 +57,10 @@ class Colony {
         else
             color='#'+Math.floor(Math.random()*16777216).toString(16).padStart(6, '0');
         return color;
+    }
+
+    //Удаление муравья
+    delAnt() {
+        ;
     }
 }

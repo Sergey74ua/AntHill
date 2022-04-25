@@ -16,33 +16,32 @@ class Action {
     ];
     
     static dead(ant) {
+        ant.life=0;
         ant.run=false;
-        if (ant.delay<0) {
-            if (ant.food>0) {
-                let food=new Food(ant.pos);
-                food.weight=ant.food;
-                model.listFood.push(food);
-                model.map[food.pos.x][food.pos.y]=food;
-            }
-            model.newFood(ant.pos)
-            //удалить муравья с массива колонии
-            model.map[ant.pos.x][ant.pos.y]={};
-            //delete(ant);
-        }
-        ant.timer=ant.getDelay(ant.delay*6);
+        ant.color=Block.color;
+        if (ant.load)
+            ant.action=Action.drop;
+        model.newFood(ant.pos);
+        //удалить муравья с массива колонии
+        model.map[ant.pos.x][ant.pos.y]=false;
+        //delete(ant);
+        ant.timer=ant.getDelay(ant.delay*10);
     }
 
     static drop(ant) {
         ant.run=false;
         if (ant.target instanceof Colony) {
             ant.target.food+=ant.load.weight;
-            ant.load=false;
+            ant.life=100;
+            ant.score+=50;
         } else {
-            model.newFood(ant.pos);
-            ant.load=false;
+            let food=new Food(ant.pos);
+            food.weight=ant.load.weight;
+            model.listFood.push(food);
+            model.map[food.pos.x][food.pos.y]=food;
         }
+        ant.load=false;
         ant.goal=constructor;
-        ant.score+=50;
         ant.timer=ant.getDelay(ant.delay);
     }
 
@@ -60,22 +59,24 @@ class Action {
         ant.goal=Colony;
         let food=Math.min(ant.target.weight, Math.floor(ant.life*0.7+Math.random()*ant.life*0.3));
         ant.target.weight-=food;
-        if (ant.target.weight<1)
-            model.delFood(ant);
         ant.load=new Food(ant.pos);
         ant.load.weight=food;
         ant.score+=50;
+        ant.life=100;
         ant.timer=ant.getDelay(ant.delay*3);
+        if (ant.target.weight<1)
+            model.delFood(ant);
     }
 
     static move(ant) {
         ant.run=true;
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed-4);
+        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed)-10;
     }
 
     static back(ant) {
         ant.run=true;
+        ant.life=100;
         if (ant.load instanceof Food)
             ant.goal=Colony;
         else

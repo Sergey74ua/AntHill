@@ -7,13 +7,12 @@ class Items {
             x: pos.x,
             y: pos.y
         };
-        this.Pi2=Math.PI*2;
     }
 
     draw(ctx) {
         ctx.fillStyle=this.color;
         ctx.beginPath();
-        ctx.arc(this.pos.x, this.pos.y, 2, 0, this.Pi2);
+        ctx.arc(this.pos.x, this.pos.y, 2, 0, Flyweight.Pi2);
         ctx.fill();
         ctx.closePath();
     }
@@ -47,31 +46,37 @@ class Food extends Items {
         this.weight=Math.round(Math.random()*128)+128;
     }
 
-    //////////////////////////  ВРЕМЕННО - ОБЗОР  /////////////////////////
     draw(ctx) {
-        if (this.weight>0) {
-            super.draw(ctx);
-            ctx.textBaseline="middle";
-            ctx.textAlign="center";
+        super.draw(ctx);
+        //Информация
+        if (control.info) {
             ctx.fillStyle='black';
             ctx.font="6pt Arial";
             ctx.fillText(this.weight, this.pos.x, this.pos.y-5);
         }
     }
-    ///////////////////////////////////////////////////////////////////////
 }
 
-/* /////////////////////////////////////
-//Метки - запах корма и муравьев
 class Label {
-    constructor(aroma, weight=128) {
-        this.color=aroma;
+    //Метки - запах корма и муравьев
+    constructor(color, weight=128) {
+        this.color=color;
         this.weight=weight;
     }
+
     update() { // Учесть наложение меток
         if (this.weight>0)
             this.weight--;
         else
             delete this;
     }
-}*/
+
+    draw(ctx) {
+        ctx.fillStyle=this.color;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.closePath();
+    }
+}

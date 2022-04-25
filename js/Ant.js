@@ -8,38 +8,37 @@ class Ant {
         this.ai=colony.ai;
         //веса нейронов
         this.goal=constructor;
-        this.score=0;
-        this.life=100;
+        this.life=100.0;
         this.lose=0;
         this.load=false;
         this.speed=1.0;
-        this.range=48;
-        this.step=5;
+        this.step=1/this.speed*5;
         this.run=false;
         this.pose=false;
-        this.delay=24;
+        this.delay=30;
         this.timer=0;
+        this.range=48;
         this.target={pos: model.rndPos(this.pos, this.range)};
         this.angle=this.getAngle(this.pos, this.target);
         this.action=Action.wait;
+        this.score=0;
     }
 
     //Обновление
     update() {
         this.timer--;
+        this.life-=0.01;
         //Смена режима
-        if (this.timer<0)
-            if (this.life<=0)
-                this.action=Action.dead;
-            else {
-                this.pos={
-                    x: Math.round(this.pos.x),
-                    y: Math.round(this.pos.y)
-                };
-                model.vision(this);
-                this.ai.select(this);
-                this.action(this);
-            }
+        if (this.timer<0) {
+            this.pos={
+                x: Math.round(this.pos.x),
+                y: Math.round(this.pos.y)
+            };
+            model.vision(this);
+            this.ai.select(this);
+            this.action(this);
+            //console.log(this.action.name); ///////////
+        }
         //Движение лапок
         if (this.run)
             this.goStep();
@@ -53,7 +52,7 @@ class Ant {
     //Отрисовка
     draw(ctx, fw) {
         let x=this.pos.x, y=this.pos.y, angle=this.angle;
-        let pose=this.pose*.5;
+        let pose=this.pose*0.5;
         //Смена координат для поворота
         ctx.save();
         ctx.translate(x, y);
@@ -92,19 +91,19 @@ class Ant {
         ctx.closePath();
         //Грудь
         ctx.beginPath();
-        ctx.arc(x, y, fw.size, 0, fw.Pi2);
+        ctx.arc(x, y, fw.size, 0, Flyweight.Pi2);
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
         //Голова
         ctx.beginPath();
-        ctx.ellipse(x, y-fw.size2, fw.size125, fw.size, 0, 0, fw.Pi2);
+        ctx.ellipse(x, y-fw.size2, fw.size125, fw.size, 0, 0, Flyweight.Pi2);
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
         //Брюшко
         ctx.beginPath();
-        ctx.ellipse(x, y+fw.size35, fw.size15, fw.size25, 0, 0, fw.Pi2);
+        ctx.ellipse(x, y+fw.size35, fw.size15, fw.size25, 0, 0, Flyweight.Pi2);
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
@@ -121,17 +120,15 @@ class Ant {
         ctx.shadowBlur=0;
         ctx.shadowOffsetX=0;
         ctx.shadowOffsetY=0;
-
-        //////////////////////////  ВРЕМЕННО - ОБЗОР  /////////////////////////
-        /*ctx.strokeStyle='Lime';
-        ctx.lineWidth=0.5;
-        ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);*/
-        ctx.textBaseline="middle";
-        ctx.textAlign="center";
-        ctx.fillStyle='Yellow';
-        ctx.font="8pt Arial";
-		ctx.fillText(this.action.name+' '+this.score, x, y-16);
-        ///////////////////////////////////////////////////////////////////////
+        //Информация
+        if (control.info) {
+            ctx.strokeStyle='Lime';
+            ctx.lineWidth=0.5;
+            ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
+            ctx.fillStyle=this.color;
+            ctx.font="7pt Arial";
+            ctx.fillText(this.action.name+' '+this.score, x, y-16);
+        }
     }
 
     //Смена шагов
@@ -143,7 +140,7 @@ class Ant {
         model.map[Math.round(this.pos.x)][Math.round(this.pos.y)]=this;
         if (this.step<=0) {
             this.pose=!this.pose;
-            this.step=5;
+            this.step=1/this.speed*5;
             this.score++;
         } else
             this.step--;
@@ -151,7 +148,7 @@ class Ant {
 
     //Поворот на цель
     getAngle(pos, target) {
-        return Math.atan2(target.pos.y-pos.y, target.pos.x-pos.x)+Math.PI/2;
+        return Math.atan2(target.pos.y-pos.y, target.pos.x-pos.x)+Flyweight.Pi05;
     }
 
     //Поворот на цель
@@ -161,10 +158,13 @@ class Ant {
 }
 
 class Flyweight {
+    static size=2;
+    static Pi05=Math.PI/2;
+    static Pi2=Math.PI*2;
+
     //Статичные данные
     constructor() {
-        this.size=2;
-        this.Pi2=Math.PI*2;
+        this.size=Flyweight.size;
         this.line=this.size*0.2;
         this.size025=this.size*0.25;
         this.size05=this.size*0.5;
