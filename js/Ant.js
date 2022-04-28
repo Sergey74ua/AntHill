@@ -8,6 +8,7 @@ class Ant {
         this.ai=colony.ai;
         //веса нейронов
         this.goal=constructor;
+        this.second=constructor; ////////
         this.life=100.0;
         this.lose=0;
         this.load=false;
@@ -34,10 +35,9 @@ class Ant {
                 x: Math.round(this.pos.x),
                 y: Math.round(this.pos.y)
             };
-            model.vision(this);
+            this.target=model.vision(this);
             this.ai.select(this);
             this.action(this);
-            //console.log(this.action.name); ///////////
         }
         //Движение лапок
         if (this.run)

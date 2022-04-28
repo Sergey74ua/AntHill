@@ -96,7 +96,12 @@ class Model {
     rndPos(pos={x: 0, y: 0}, range=false) {
         let sector;
         if (range)
-            sector=this.getSector(pos, range);
+            sector={
+                left: Math.max(pos.x-range, 0),
+                right: Math.min(pos.x+range, this.size.width),
+                top: Math.max(pos.y-range, 0),
+                bottom: Math.min(pos.y+range, this.size.height)
+            };
         else
             sector={
                 left: this.size.width*0.05,
@@ -116,24 +121,29 @@ class Model {
         }
         return pos;
     }
-    
+
     //Обзор юнита (желательно, поиск по спирали, до нужной цели)
     vision(ant) {
-        let sector=this.getSector(ant.pos, ant.range);
+        let range=Math.min(ant.range, ant.pos.x, this.size.width-ant.pos.x,
+            ant.pos.y, this.size.height-ant.pos.y);
+        for (let i=1; i<=range; i++)
+            for (let j=-i+1; j<=i; j++) {
+                if (this.map[ant.pos.x+i][ant.pos.y+j] instanceof ant.goal)
+                    return this.map[ant.pos.x+i][ant.pos.y+j];
+                if (this.map[ant.pos.x-j][ant.pos.y+i] instanceof ant.goal)
+                    return this.map[ant.pos.x-j][ant.pos.y+i];
+                if (this.map[ant.pos.x-i][ant.pos.y-j] instanceof ant.goal)
+                    return this.map[ant.pos.x-i][ant.pos.y-j];
+                if (this.map[ant.pos.x+j][ant.pos.y-i] instanceof ant.goal)
+                    return this.map[ant.pos.x+j][ant.pos.y-i];
+            };
+        return {pos: this.rndPos(ant.pos, range)};
+        ///////////////////////////////////////////////////////////////////
+        /*let sector=this.getSector(ant.pos, ant.range);
         for (let x=sector.left; x<sector.right; x++)
             for (let y=sector.top; y<sector.bottom; y++)
                 if (this.map[x][y] instanceof ant.goal)
-                    ant.target=this.map[x][y];
-    }
-
-    //Границы сектора
-    getSector(pos, range=0) {
-        return {
-            left: Math.max(pos.x-range, 0),
-            right: Math.min(pos.x+range, this.size.width),
-            top: Math.max(pos.y-range, 0),
-            bottom: Math.min(pos.y+range, this.size.height)
-        };
+                    ant.target=this.map[x][y];*/
     }
 
     //Расстояние до цели
