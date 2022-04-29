@@ -122,13 +122,15 @@ class Ant {
         ctx.shadowOffsetY=0;
         //Информация
         if (control.info) {
+            //Диапазон всего обзора
             ctx.strokeStyle='Lime';
             ctx.lineWidth=0.5;
             ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
+            //Информация муравья
             ctx.fillStyle=this.color;
             ctx.font="7pt Arial";
             ctx.fillText(this.action.name+' '+this.score, x, y-16);
-            ///////////////////////////////////////////////////////////////////////
+            //Диапазон оптимального обзора
             ctx.strokeStyle='Red';
             ctx.strokeRect(model.sector.left, model.sector.top,
                 model.sector.right-model.sector.left, model.sector.bottom-model.sector.top);
