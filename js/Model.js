@@ -45,6 +45,8 @@ class Model {
         //Корм
         for (let i=0; i<this.base*20; i++)
             this.newFood(this.rndPos());
+        //Границы обзора
+        this.sector={left: 0, right: 0, top: 0, bottom: 0};
     }
 
     //Обновление
@@ -76,7 +78,6 @@ class Model {
 
     //Удаление корма
     delFood(ant) {
-        //console.log(this.listFood.length); /////////////////
         let listFood=[];
         for (let food of this.listFood) {
             if (food.weight>0)
@@ -94,16 +95,10 @@ class Model {
 
     //Случайная позиция
     rndPos(pos={x: 0, y: 0}, range=false) {
-        let sector;
         if (range)
-            sector={
-                left: Math.max(pos.x-range, 0),
-                right: Math.min(pos.x+range, this.size.width),
-                top: Math.max(pos.y-range, 0),
-                bottom: Math.min(pos.y+range, this.size.height)
-            };
+            this.sector=this.getSector(pos, range);
         else
-            sector={
+            this.sector={
                 left: this.size.width*0.05,
                 right: this.size.width*0.95,
                 top: this.size.height*0.05,
@@ -113,8 +108,8 @@ class Model {
         let collision=true;
         while (collision) {
             pos={
-                x: Math.round(Math.random()*(sector.right-sector.left)+sector.left),
-                y: Math.round(Math.random()*(sector.bottom-sector.top)+sector.top)
+                x: Math.round(Math.random()*(this.sector.right-this.sector.left)+this.sector.left),
+                y: Math.round(Math.random()*(this.sector.bottom-this.sector.top)+this.sector.top)
             };
             if (this.map[pos.x][pos.y]===false)
                 collision=false;
@@ -122,28 +117,40 @@ class Model {
         return pos;
     }
 
-    //Обзор юнита (желательно, поиск по спирали, до нужной цели)
+    //Обзор юнита
     vision(ant) {
-        let range=Math.min(ant.range, ant.pos.x, this.size.width-ant.pos.x,
-            ant.pos.y, this.size.height-ant.pos.y);
-        for (let i=1; i<=range; i++)
-            for (let j=-i+1; j<=i; j++) {
-                if (this.map[ant.pos.x+i][ant.pos.y+j] instanceof ant.goal)
-                    return this.map[ant.pos.x+i][ant.pos.y+j];
-                if (this.map[ant.pos.x-j][ant.pos.y+i] instanceof ant.goal)
-                    return this.map[ant.pos.x-j][ant.pos.y+i];
-                if (this.map[ant.pos.x-i][ant.pos.y-j] instanceof ant.goal)
-                    return this.map[ant.pos.x-i][ant.pos.y-j];
-                if (this.map[ant.pos.x+j][ant.pos.y-i] instanceof ant.goal)
-                    return this.map[ant.pos.x+j][ant.pos.y-i];
+        // Поиск методом обхода рядов и колонок от центра
+        for (let i=1; i<=ant.range; i++) {
+            this.sector=this.getSector(ant.pos, i);
+            for (let j=this.sector.left; j<=this.sector.right; j++) {
+                if (this.map[j][this.sector.top] instanceof ant.goal)
+                    return this.map[j][this.sector.top];
+                if (this.map[j][this.sector.bottom] instanceof ant.goal)
+                    return this.map[j][this.sector.bottom];
             };
-        return {pos: this.rndPos(ant.pos, range)};
-        ///////////////////////////////////////////////////////////////////
+            for (let j=this.sector.top+1; j<=this.sector.bottom-1; j++) {
+                if (this.map[this.sector.left][j] instanceof ant.goal)
+                    return this.map[this.sector.left][j];
+                if (this.map[this.sector.right][j] instanceof ant.goal)
+                    return this.map[this.sector.right][j];
+            };
+        };
+        // Поиск методом обхода всего квадрата по порядку
         /*let sector=this.getSector(ant.pos, ant.range);
         for (let x=sector.left; x<sector.right; x++)
             for (let y=sector.top; y<sector.bottom; y++)
                 if (this.map[x][y] instanceof ant.goal)
-                    ant.target=this.map[x][y];*/
+                    return this.map[x][y];*/
+    }
+
+    //Границы сектора
+    getSector(pos, range=0) {
+        return {
+            left: Math.max(pos.x-range, 0),
+            right: Math.min(pos.x+range, this.size.width-1),
+            top: Math.max(pos.y-range, 0),
+            bottom: Math.min(pos.y+range, this.size.height-1)
+        };
     }
 
     //Расстояние до цели

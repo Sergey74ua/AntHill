@@ -128,6 +128,10 @@ class Ant {
             ctx.fillStyle=this.color;
             ctx.font="7pt Arial";
             ctx.fillText(this.action.name+' '+this.score, x, y-16);
+            ///////////////////////////////////////////////////////////////////////
+            ctx.strokeStyle='Red';
+            ctx.strokeRect(model.sector.left, model.sector.top,
+                model.sector.right-model.sector.left, model.sector.bottom-model.sector.top);
         }
     }
 
