@@ -8,7 +8,6 @@ class Ant {
         this.ai=colony.ai;
         //веса нейронов
         this.goal=constructor;
-        this.second=constructor; ////////
         this.life=100.0;
         this.lose=0;
         this.load=false;
@@ -31,10 +30,6 @@ class Ant {
         this.life-=0.01;
         //Смена режима
         if (this.timer<0) {
-            this.pos={
-                x: Math.round(this.pos.x),
-                y: Math.round(this.pos.y)
-            };
             this.target=model.vision(this);
             this.ai.select(this);
             this.action(this);
@@ -124,30 +119,31 @@ class Ant {
         if (control.info) {
             //Диапазон всего обзора
             ctx.strokeStyle='Lime';
-            ctx.lineWidth=0.5;
             ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
             //Информация муравья
             ctx.fillStyle=this.color;
             ctx.font="7pt Arial";
             ctx.fillText(this.action.name+' '+this.score, x, y-16);
-            //Диапазон оптимального обзора
-            ctx.strokeStyle='Red';
-            ctx.strokeRect(model.sector.left, model.sector.top,
-                model.sector.right-model.sector.left, model.sector.bottom-model.sector.top);
         }
     }
 
     //Смена шагов
     goStep() {
-        model.map[Math.round(this.pos.x)][Math.round(this.pos.y)]=false;
+        let pos={x: Math.round(this.pos.x), y: Math.round(this.pos.y)};
+        model.map[pos.x][pos.y]=false;
         let angle=this.angle-Math.PI/2;
         this.pos.x+=this.speed*Math.cos(angle);
         this.pos.y+=this.speed*Math.sin(angle);
-        model.map[Math.round(this.pos.x)][Math.round(this.pos.y)]=this;
+        pos={x: Math.round(this.pos.x), y: Math.round(this.pos.y)};
+        model.map[pos.x][pos.y]=this;
         if (this.step<=0) {
             this.pose=!this.pose;
             this.step=1/this.speed*5;
             this.score++;
+            if (this.pose)
+                model.newLabel(this.color, pos);
+            else if (this.load instanceof Food)
+                model.newLabel(Food.color, pos);
         } else
             this.step--;
     }

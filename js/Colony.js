@@ -61,6 +61,6 @@ class Colony {
 
     //Удаление муравья
     delAnt() {
-        ;
+        console.log('Ну, типа - умер.');
     }
 }

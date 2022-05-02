@@ -13,9 +13,9 @@ class Control {
         this.btnPlay.addEventListener('click', this.play.bind(this));
         this.btnClear.addEventListener('click', this.clear.bind(this));
 
-        setInterval(() => this.update(), this.fps);
         onclick=(e) => this.onClick(e);
         onkeydown=(e) => this.onKeyDown(e);
+        setInterval(() => this.update(), this.fps);
     }
 
     //Обновление
@@ -73,6 +73,22 @@ class Control {
         else
             this.btnPlay.innerHTML='<i class="fa fa-play" aria-hidden="true"></i>';
     }
+
+    /*
+    - window.addEventListener('resize', onResize);
+    //Размер игровой карты
+    resize() {
+        if (this.size.width<=canvas.width)
+            this.size.width=canvas.width;
+        else
+            this.size.width=this.size.width; //Проверка на наличие объектов
+        if (this.size.height<=canvas.height)
+            this.size.height=canvas.height;
+        else
+            this.size.height=this.size.height; //Проверка на наличие объектов
+        ctx.shadowColor='Black';
+    }
+    */
 }
 
 /*

@@ -65,13 +65,13 @@ class Action {
         ant.life=100;
         ant.timer=ant.getDelay(ant.delay*3);
         if (ant.target.weight<1)
-            model.delFood(ant);
+            model.delFood();
     }
 
     static move(ant) {
         ant.run=true;
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed)-10;
+        ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed)-10;
     }
 
     static back(ant) {
@@ -81,15 +81,13 @@ class Action {
             ant.goal=Colony;
         else
             ant.goal=constructor;
-        ant.target={pos: model.rndPos(this.pos, this.range)};
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed);
+        ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed);
     }
 
     static find(ant) {
         ant.run=true;
         ant.goal=Food;
-        ant.target={pos: model.rndPos(this.pos, this.range)};
         ant.angle=ant.getAngle(ant.pos, ant.target);
         ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed);
     }
@@ -105,7 +103,7 @@ class Action {
     }
 
     static flex(ant) {
-        ant.target.pos=ant.pos;
+        ant.speed=0;
         ant.run=true;
         ant.timer=ant.getDelay(ant.delay*8);
     }

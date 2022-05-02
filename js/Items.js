@@ -59,24 +59,20 @@ class Food extends Items {
 
 class Label {
     //Метки - запах корма и муравьев
-    constructor(color, weight=128) {
+    constructor(color, pos) {
+        this.pos={
+            x: pos.x,
+            y: pos.y
+        };
         this.color=color;
-        this.weight=weight;
-    }
-
-    update() { // Учесть наложение меток
-        if (this.weight>0)
-            this.weight--;
-        else
-            delete this;
+        this.weight=1024;
     }
 
     draw(ctx) {
         ctx.fillStyle=this.color;
         ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x, y);
-        ctx.stroke();
+        ctx.fillRect(this.pos.x, this.pos.y, 1, 1);
+        ctx.fill();
         ctx.closePath();
     }
 }

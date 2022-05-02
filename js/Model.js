@@ -3,18 +3,19 @@
 class Model {
     //Базовая модель
     constructor() {
-        this.base=4;
-        this.food=256;
         this.size={
             width: window.innerWidth,
             height: window.innerHeight
         };
+        this.base=4;
+        this.food=256;
         this.map=[];
         this.air=[];
         this.listBlock=[];
         this.listColony=[];
         this.listRock=[];
         this.listFood=[];
+        this.listLabel=[];
         this.init();
     }
 
@@ -45,8 +46,6 @@ class Model {
         //Корм
         for (let i=0; i<this.base*20; i++)
             this.newFood(this.rndPos());
-        //Границы обзора
-        this.sector={left: 0, right: 0, top: 0, bottom: 0};
     }
 
     //Обновление
@@ -56,6 +55,7 @@ class Model {
                 ant.update();
             colony.update();
         }
+        this.upLabel();
     }
 
     //Добавление блоков
@@ -77,39 +77,78 @@ class Model {
     }
 
     //Удаление корма
-    delFood(ant) {
+    delFood() {
         let listFood=[];
         for (let food of this.listFood) {
             if (food.weight>0)
                 listFood.push(food);
             else {
+                delete this.map[food.pos.x][food.pos.y];
                 this.map[food.pos.x][food.pos.y]=false;
-                delete ant.target; //// а что удаляет ссылка на food ?!
             }
         }
         this.listFood=listFood;
-        /*this.map[ant.target.pos.x][ant.target.pos.y]=false;
-        this.listFood=this.listFood.filter(function(food) {return food.weight>0});
-        delete ant.target;*/
+    }
+    
+    //Добавление метки
+    newLabel(color, pos) {
+        if (!this.air[pos.x][pos.y]) {
+            let label=new Label(color, pos);
+            this.air[pos.x][pos.y]=label;
+            this.listLabel.push(label);
+        } else if (this.air[pos.x][pos.y].color!=color && this.air[pos.x][pos.y].weight<1024) {
+            this.air[pos.x][pos.y].color=color;
+            this.air[pos.x][pos.y].weight=1024;
+        } else if (this.air[pos.x][pos.y].color==color)
+            this.air[pos.x][pos.y].weight=Math.min(this.air[pos.x][pos.y].weight+1024, 8192);
+        else
+            this.air[pos.x][pos.y].weight--;
+    }
+
+    //Испарение меток
+    upLabel() {
+        let listLabel=[];
+        for (let label of this.listLabel) {
+            label.weight--;
+            if (label.weight>0)
+                listLabel.push(label);
+            else {
+                delete this.air[label.pos.x][label.pos.y];
+                this.air[label.pos.x][label.pos.y]=false;
+            }
+        }
+        this.listLabel=listLabel;
+    }
+
+    //Обзор юнита
+    vision(ant) {
+        ant.pos={x: Math.round(ant.pos.x), y: Math.round(ant.pos.y)};
+        for (let i=1; i<=ant.range; i++) {
+            let sector=this.getSector(ant.pos, i);
+            for (let j=sector.left; j<=sector.right; j++) {
+                if (this.map[j][sector.top] instanceof ant.goal)
+                    return this.map[j][sector.top];
+                if (this.map[j][sector.bottom] instanceof ant.goal)
+                    return this.map[j][sector.bottom];
+            };
+            for (let j=sector.top+1; j<=sector.bottom-1; j++) {
+                if (this.map[sector.left][j] instanceof ant.goal)
+                    return this.map[sector.left][j];
+                if (this.map[sector.right][j] instanceof ant.goal)
+                    return this.map[sector.right][j];
+            };
+        };
+        return {pos: this.rndPos(ant.pos, ant.range)};
     }
 
     //Случайная позиция
-    rndPos(pos={x: 0, y: 0}, range=false) {
-        if (range)
-            this.sector=this.getSector(pos, range);
-        else
-            this.sector={
-                left: this.size.width*0.05,
-                right: this.size.width*0.95,
-                top: this.size.height*0.05,
-                bottom: this.size.height*0.95
-            };
-        //Поиск свободных координат
+    rndPos(pos={x: this.size.width/2, y: this.size.height/2}, range=false) {
+        let sector=this.getSector(pos, range);
         let collision=true;
         while (collision) {
             pos={
-                x: Math.round(Math.random()*(this.sector.right-this.sector.left)+this.sector.left),
-                y: Math.round(Math.random()*(this.sector.bottom-this.sector.top)+this.sector.top)
+                x: Math.round(Math.random()*(sector.right-sector.left)+sector.left),
+                y: Math.round(Math.random()*(sector.bottom-sector.top)+sector.top)
             };
             if (this.map[pos.x][pos.y]===false)
                 collision=false;
@@ -117,40 +156,22 @@ class Model {
         return pos;
     }
 
-    //Обзор юнита
-    vision(ant) {
-        // Поиск методом обхода рядов и колонок от центра
-        for (let i=1; i<=ant.range; i++) {
-            this.sector=this.getSector(ant.pos, i);
-            for (let j=this.sector.left; j<=this.sector.right; j++) {
-                if (this.map[j][this.sector.top] instanceof ant.goal)
-                    return this.map[j][this.sector.top];
-                if (this.map[j][this.sector.bottom] instanceof ant.goal)
-                    return this.map[j][this.sector.bottom];
-            };
-            for (let j=this.sector.top+1; j<=this.sector.bottom-1; j++) {
-                if (this.map[this.sector.left][j] instanceof ant.goal)
-                    return this.map[this.sector.left][j];
-                if (this.map[this.sector.right][j] instanceof ant.goal)
-                    return this.map[this.sector.right][j];
-            };
-        };
-        // Поиск методом обхода всего квадрата по порядку
-        /*let sector=this.getSector(ant.pos, ant.range);
-        for (let x=sector.left; x<sector.right; x++)
-            for (let y=sector.top; y<sector.bottom; y++)
-                if (this.map[x][y] instanceof ant.goal)
-                    return this.map[x][y];*/
-    }
-
     //Границы сектора
-    getSector(pos, range=0) {
-        return {
-            left: Math.max(pos.x-range, 0),
-            right: Math.min(pos.x+range, this.size.width-1),
-            top: Math.max(pos.y-range, 0),
-            bottom: Math.min(pos.y+range, this.size.height-1)
-        };
+    getSector(pos, range=false) {
+        if (range)
+            return {
+                left: Math.max(pos.x-range, 0),
+                right: Math.min(pos.x+range, this.size.width-1),
+                top: Math.max(pos.y-range, 0),
+                bottom: Math.min(pos.y+range, this.size.height-1)
+            };
+        else
+            return {
+                left: this.size.width*0.05,
+                right: this.size.width*0.95,
+                top: this.size.height*0.05,
+                bottom: this.size.height*0.95
+            };
     }
 
     //Расстояние до цели
@@ -158,20 +179,6 @@ class Model {
         return Math.sqrt(Math.pow(target.pos.x-pos.x, 2)+Math.pow(target.pos.y-pos.y, 2));
     }
     /*
-    //Размер игровой карты
-    resize() {
-        if (this.size.width<=canvas.width)
-            this.size.width=canvas.width;
-        else
-            this.size.width=this.size.width; //Проверка на наличие объектов
-        if (this.size.height<=canvas.height)
-            this.size.height=canvas.height;
-        else
-            this.size.height=this.size.height; //Проверка на наличие объектов
-        ctx.shadowColor='Black';
-        this.terrain.reload(this.size); //а что там делается?
-    }
-
     //Сохранение игры (ДОРАБОТАТЬ)
     save() {
         var blob=new Blob(["Тестовый текст ..."],
@@ -182,7 +189,8 @@ class Model {
     //Загрузка игры (ДОРАБОТАТЬ)
     load() {
         ;
-    }*/
+    }
+    */
 }
 
 /*
