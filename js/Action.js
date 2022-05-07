@@ -47,7 +47,7 @@ class Action {
 
     static kick(ant) {
         ant.run=false;
-        //проверить близость корма или противника,
+        ant.target.target=ant;
         ant.angle=ant.getAngle(ant.pos, ant.target);
         //шаг перед или назад,
         ant.score+=100;

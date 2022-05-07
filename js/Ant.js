@@ -9,7 +9,6 @@ class Ant {
         //веса нейронов
         this.goal=constructor;
         this.life=100.0;
-        this.lose=0;
         this.load=false;
         this.speed=1.0;
         this.step=1/this.speed*5;

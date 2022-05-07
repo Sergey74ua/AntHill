@@ -10,8 +10,10 @@ class Control {
         
         this.btnPlay=document.getElementById('play');
         this.btnClear=document.getElementById('clear');
+        this.btnSave=document.getElementById('save');
         this.btnPlay.addEventListener('click', this.play.bind(this));
         this.btnClear.addEventListener('click', this.clear.bind(this));
+        this.btnSave.addEventListener('click', this.save.bind(this));
 
         onclick=(e) => this.onClick(e);
         onkeydown=(e) => this.onKeyDown(e);
@@ -64,6 +66,12 @@ class Control {
         this.btnName();
         //Предложение сохранения
         model=new Model();
+    }
+
+    //Кнопка сохранения
+    save() {
+        this.focus=true;
+        console.log('Кнопка Save');
     }
 
     //Функция старт/пауза
