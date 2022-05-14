@@ -50,12 +50,20 @@ class Model {
 
     //Обновление
     update() {
-        for (let colony of this.listColony) {
-            for (let ant of colony.listAnt)
-                ant.update();
+        for (let colony of this.listColony)
             colony.update();
+        //Испарение меток
+        let listLabel=[];
+        for (let label of this.listLabel) {
+            label.update();
+            if (label.weight>0)
+                listLabel.push(label);
+            else {
+                delete this.air[label.pos.x][label.pos.y];
+                this.air[label.pos.x][label.pos.y]=false;
+            }
         }
-        this.upLabel();
+        this.listLabel=listLabel;
     }
 
     //Добавление блоков
@@ -70,8 +78,8 @@ class Model {
     }
 
     //Добавление корма
-    newFood(pos) {
-        let food=new Food(pos);
+    newFood(pos, weight=Math.round(Math.random()*128)+128) {
+        let food=new Food(pos, weight);
         this.listFood.push(food);
         this.map[food.pos.x][food.pos.y]=food;
     }
@@ -105,24 +113,10 @@ class Model {
             this.air[pos.x][pos.y].weight--;
     }
 
-    //Испарение меток
-    upLabel() {
-        let listLabel=[];
-        for (let label of this.listLabel) {
-            label.weight--;
-            if (label.weight>0)
-                listLabel.push(label);
-            else {
-                delete this.air[label.pos.x][label.pos.y];
-                this.air[label.pos.x][label.pos.y]=false;
-            }
-        }
-        this.listLabel=listLabel;
-    }
-
     //Обзор юнита
     vision(ant) {
-        ant.pos={x: Math.round(ant.pos.x), y: Math.round(ant.pos.y)};
+        if (ant.target instanceof Ant) //атака или запрос знаний
+            return ant.target;
         for (let i=1; i<=ant.range; i++) {
             let sector=this.getSector(ant.pos, i);
             for (let j=sector.left; j<=sector.right; j++) {

@@ -40,10 +40,10 @@ class Rock extends Items {
 class Food extends Items {
     static color='Brown';
     //Корм - непроходим, переносим и съедобен
-    constructor(pos) {
+    constructor(pos, weight) {
         super(pos);
         this.color=Food.color;
-        this.weight=Math.round(Math.random()*128)+128;
+        this.weight=weight;
     }
 
     draw(ctx) {
@@ -66,6 +66,10 @@ class Label {
         };
         this.color=color;
         this.weight=1024;
+    }
+
+    update() {
+        this.weight--;
     }
 
     draw(ctx) {

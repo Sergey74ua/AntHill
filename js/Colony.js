@@ -10,7 +10,7 @@ class Colony {
     ];
 
     constructor(i, pos, food) {
-        this.food=food;
+        this.weight=food;
         this.pos=pos;
         this.color=this.getColor(i);
         this.ai=new PI();
@@ -21,13 +21,22 @@ class Colony {
 
     //Обновление
     update() {
-        if (this.food>0)
+        if (this.weight>100)
             this.timer--;
             if (this.timer<0) {
                 this.listAnt.push(new Ant(this));
-                this.food-=100;
+                this.weight-=100;
                 this.timer=this.delay;
             }
+        let listAnt=[];
+        for (let ant of this.listAnt) {
+            ant.update();
+            if (ant.life<=-ant.delay*10)
+                model.newFood(ant.getPos(ant.pos), 100);
+            else
+                listAnt.push(ant);
+        }
+        this.listAnt=listAnt;
     }
 
     //Отрисовка
@@ -57,10 +66,5 @@ class Colony {
         else
             color='#'+Math.floor(Math.random()*16777216).toString(16).padStart(6, '0');
         return color;
-    }
-
-    //Удаление муравья
-    delAnt() {
-        console.log('Ну, типа - умер.');
     }
 }

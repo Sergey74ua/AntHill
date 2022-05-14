@@ -14,16 +14,16 @@ class PI {
         if (ant.life<=0)
             ant.action=Action.dead;
         //Сброс - если есть корм и (рядом свой муравейник или тебя атакуют)
-        else if (ant.load && (ant.lose || (ant.target instanceof Colony && ant.target.color==ant.color) && model.delta(ant.pos, ant.target)<(ant.speed*12)))
+        else if (ant.load instanceof Rock || (ant.load && ((ant.target instanceof Colony && ant.target.color==ant.color && model.delta(ant.pos, ant.target)<ant.speed*12) || (ant.target instanceof Ant && ant.target.color!=ant.color))))
             ant.action=Action.drop;
         //Атака - если тебя атакуют или рядом чужой муравей с кормом
-        else if (ant.target instanceof Ant && ant.target.color!=ant.color && ant.target.load instanceof Food)
+        else if (ant.target instanceof Ant && ant.target.color!=ant.color)
             ant.action=Action.kick;
         //Сбор - если нет корма и рядом корм
-        else if (!(ant.load instanceof Food) && (ant.target instanceof Food) && model.delta(ant.pos, ant.target)<(ant.speed*12))
+        else if (!(ant.load instanceof Food) && (ant.target instanceof Food) && model.delta(ant.pos, ant.target)<ant.speed*12)
             ant.action=Action.grab;
         //Подход - если виден корм или муравейник
-        else if (ant.target instanceof ant.goal && !(ant.load instanceof Colony && ant.target.color!=ant.color)) //нужно исключить чужие муравейники !!!
+        else if (ant.target instanceof ant.goal && !(ant.goal instanceof Colony && ant.target.color!=ant.color))
             ant.action=Action.move;
         //Возврат - если есть корм
         else if (ant.load instanceof Food)

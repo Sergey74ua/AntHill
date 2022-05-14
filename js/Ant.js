@@ -7,7 +7,6 @@ class Ant {
         this.pos=model.rndPos(colony.pos, 5);
         this.ai=colony.ai;
         //веса нейронов
-        this.goal=constructor;
         this.life=100.0;
         this.load=false;
         this.speed=1.0;
@@ -21,26 +20,23 @@ class Ant {
         this.angle=this.getAngle(this.pos, this.target);
         this.action=Action.wait;
         this.score=0;
+        this.goal=constructor;
     }
 
     //Обновление
     update() {
         this.timer--;
-        this.life-=0.01;
+        this.life-=0.51;
+        //Движение муравья
+        if (this.run)
+            this.goStep();
         //Смена режима
         if (this.timer<0) {
+            this.pos=this.getPos(this.pos);
             this.target=model.vision(this);
             this.ai.select(this);
             this.action(this);
         }
-        //Движение лапок
-        if (this.run)
-            this.goStep();
-        //Корм
-        if (this.load)
-            this.speed=0.667;
-        else
-            this.speed=1.0;
     }
 
     //Отрисовка
@@ -122,18 +118,18 @@ class Ant {
             //Информация муравья
             ctx.fillStyle=this.color;
             ctx.font="7pt Arial";
-            ctx.fillText(this.action.name+' '+this.score, x, y-16);
+            ctx.fillText(this.action.name+' '+this.timer, x, y-16);
         }
     }
 
     //Смена шагов
     goStep() {
-        let pos={x: Math.round(this.pos.x), y: Math.round(this.pos.y)};
+        let pos=this.getPos(this.pos);
         model.map[pos.x][pos.y]=false;
         let angle=this.angle-Math.PI/2;
         this.pos.x+=this.speed*Math.cos(angle);
         this.pos.y+=this.speed*Math.sin(angle);
-        pos={x: Math.round(this.pos.x), y: Math.round(this.pos.y)};
+        pos=this.getPos(this.pos);
         model.map[pos.x][pos.y]=this;
         if (this.step<=0) {
             this.pose=!this.pose;
@@ -145,6 +141,10 @@ class Ant {
                 model.newLabel(Food.color, pos);
         } else
             this.step--;
+    }
+
+    getPos(pos) {
+        return {x: Math.round(pos.x), y: Math.round(pos.y)};
     }
 
     //Поворот на цель
