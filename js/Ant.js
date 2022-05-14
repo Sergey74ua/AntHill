@@ -26,7 +26,7 @@ class Ant {
     //Обновление
     update() {
         this.timer--;
-        this.life-=0.51;
+        this.life-=0.01;
         //Движение муравья
         if (this.run)
             this.goStep();
