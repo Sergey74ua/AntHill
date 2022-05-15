@@ -1,7 +1,7 @@
 //Симулятор колонии муравьев
 
 class Colony {
-    
+    //Палитра по умолчанию
     pallet=[
         'SaddleBrown',
         'DarkKhaki',
@@ -16,7 +16,7 @@ class Colony {
         this.ai=new PI();
         this.listAnt=[];
         this.delay=200;
-        this.timer=Math.round(this.delay/4);
+        this.timer=this.delay/4;
     }
 
     //Обновление

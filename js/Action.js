@@ -25,7 +25,7 @@ class Action {
     static drop(ant) {
         ant.run=false;
         if (ant.target instanceof Colony) {
-            ant.target.food+=ant.load.weight;
+            ant.target.weight+=ant.load.weight;
             ant.timer=ant.load.weight;
             ant.life=100;
             ant.score+=50;

@@ -136,7 +136,7 @@ class Model {
     }
 
     //Случайная позиция
-    rndPos(pos={x: this.size.width/2, y: this.size.height/2}, range=false) {
+    rndPos(pos={x: this.size.width/2, y: this.size.height/2}, range=Math.max(this.size.width, this.size.height)) {
         let sector=this.getSector(pos, range);
         let collision=true;
         while (collision) {
@@ -151,21 +151,13 @@ class Model {
     }
 
     //Границы сектора
-    getSector(pos, range=false) {
-        if (range)
-            return {
-                left: Math.max(pos.x-range, 0),
-                right: Math.min(pos.x+range, this.size.width-1),
-                top: Math.max(pos.y-range, 0),
-                bottom: Math.min(pos.y+range, this.size.height-1)
-            };
-        else
-            return {
-                left: this.size.width*0.05,
-                right: this.size.width*0.95,
-                top: this.size.height*0.05,
-                bottom: this.size.height*0.95
-            };
+    getSector(pos, range) {
+        return {
+            left: Math.max(pos.x-range, 0),
+            right: Math.min(pos.x+range, this.size.width-1),
+            top: Math.max(pos.y-range, 0),
+            bottom: Math.min(pos.y+range, this.size.height-1)
+        };
     }
 
     //Расстояние до цели

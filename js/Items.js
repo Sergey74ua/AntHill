@@ -33,7 +33,7 @@ class Rock extends Items {
     constructor(pos) {
         super(pos);
         this.color=Rock.color;
-        this.weight=1; //Math.round(Math.random()*16)+240;
+        //this.weight=1; //Math.round(Math.random()*16)+240;
     }
 }
 
