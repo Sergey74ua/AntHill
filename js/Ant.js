@@ -4,7 +4,7 @@ class Ant {
     //Муравей
     constructor(colony) {
         this.color=colony.color;
-        this.pos=model.rndPos(colony.pos, 5);
+        this.pos=model.randPos(colony.pos, 4);
         this.ai=colony.ai;
         //веса нейронов
         this.life=100.0;
@@ -13,30 +13,29 @@ class Ant {
         this.step=1/this.speed*5;
         this.run=false;
         this.pose=false;
-        this.delay=30;
+        this.delay=25;
         this.timer=0;
         this.range=48;
-        this.target={pos: model.rndPos(this.pos, this.range)};
-        this.angle=this.getAngle(this.pos, this.target);
+        this.target=false;
+        this.angle=false;
         this.action=Action.wait;
         this.score=0;
-        this.goal=constructor;
+        this.listTarget=this.vision();
     }
 
     //Обновление
     update() {
         this.timer--;
         this.life-=0.01;
+        //Смена режима
+        if (this.timer<=0) {
+            this.listTarget=this.vision(); //// ПЕРЕНЕСТИ В ДЕЙСТВИЯ ?
+            this.action=this.ai.select(this);
+            this.action(this);
+        }
         //Движение муравья
         if (this.run)
             this.goStep();
-        //Смена режима
-        if (this.timer<0) {
-            this.pos=this.getPos(this.pos);
-            this.target=model.vision(this);
-            this.ai.select(this);
-            this.action(this);
-        }
     }
 
     //Отрисовка
@@ -121,15 +120,67 @@ class Ant {
             ctx.fillText(this.action.name+' '+this.timer, x, y-16);
         }
     }
+    
+    //Осматриваем карту
+    vision() {
+        this.listTarget={
+            colony: false,
+            ally: false,
+            alien: false,
+            food: false,
+            rock: false,
+            labFood: false,
+            labAnt: false,
+            random: false
+        };
+        this.pos=model.roundPos(this.pos);
+        for (let i=1; i<=this.range; i++) {
+            let sector=model.getSector(this.pos, i);
+            for (let j=sector.left; j<=sector.right; j++) {
+                if (model.map[j][sector.top])
+                    this.memory(model.map[j][sector.top]);
+                if (model.map[j][sector.bottom])
+                    this.memory(model.map[j][sector.bottom]);
+            };
+            for (let j=sector.top+1; j<=sector.bottom-1; j++) {
+                if (model.map[sector.left][j])
+                    this.memory(model.map[sector.left][j]);
+                if (model.map[sector.right][j])
+                    this.memory(model.map[sector.right][j]);
+            };
+        };
+        this.listTarget.random={pos: model.randPos(this.pos, this.range)};
+        return this.listTarget;
+    }
+
+    //Запоминаем объекты
+    memory(point) {
+        if (!this.listTarget.food && point instanceof Food)
+            this.listTarget.food=point;
+        else if (point instanceof Rock)
+            this.listTarget.rock=point;
+        else if (point instanceof Ant) {
+            if (point.color==this.color && point.score>this.listTarget.ally.score)
+                this.listTarget.ally=point;
+            else if (point.color!=this.color && point.load instanceof Food)
+                this.listTarget.alien=point;
+        } else if (point instanceof Label) {
+            if (point.color==Food.color && point.weight<this.listTarget.labFood.weight)
+                this.listTarget.labFood=point;
+            else if (point.color==this.color && point.weight>this.listTarget.labAnt.weight)
+                this.listTarget.labAnt=point; //НУЖНО ИСКЛЮЧИТЬ СВОЙ СЛЕД
+        } else if (point instanceof Colony && point.color==this.color)
+            this.listTarget.colony=point;
+    }
 
     //Смена шагов
     goStep() {
-        let pos=this.getPos(this.pos);
+        let pos=model.roundPos(this.pos);
         model.map[pos.x][pos.y]=false;
         let angle=this.angle-Math.PI/2;
         this.pos.x+=this.speed*Math.cos(angle);
         this.pos.y+=this.speed*Math.sin(angle);
-        pos=this.getPos(this.pos);
+        pos=model.roundPos(this.pos);
         model.map[pos.x][pos.y]=this;
         if (this.step<=0) {
             this.pose=!this.pose;
@@ -143,17 +194,13 @@ class Ant {
             this.step--;
     }
 
-    getPos(pos) {
-        return {x: Math.round(pos.x), y: Math.round(pos.y)};
-    }
-
     //Поворот на цель
     getAngle(pos, target) {
         return Math.atan2(target.pos.y-pos.y, target.pos.x-pos.x)+Flyweight.Pi05;
     }
 
-    //Поворот на цель
-    getDelay(delay) {
+    //Случайная длительность действия
+    randDelay(delay) {
         return Math.round(delay*0.667+Math.random()*delay*0.667);
     }
 }

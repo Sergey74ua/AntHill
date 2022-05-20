@@ -4,10 +4,13 @@ class Action {
     //Действия муравья
     static listAction=[
         Action.dead,
+        Action.view,
+        Action.turn,
+        Action.move,
         Action.drop,
         Action.kick,
+        Action.fund,
         Action.grab,
-        Action.move,
         Action.back,
         Action.find,
         Action.info,
@@ -19,47 +22,17 @@ class Action {
         ant.run=false;
         ant.color=Block.color;
         if (ant.load instanceof Food) // а если был камень?
-            model.newFood(ant.pos, ant.load.weight);
-    }
-
-    static drop(ant) {
-        ant.run=false;
-        if (ant.target instanceof Colony) {
-            ant.target.weight+=ant.load.weight;
-            ant.timer=ant.load.weight;
-            ant.life=100;
-            ant.score+=50;
-        } else {
-            model.newFood(ant.pos, ant.load.weight);
-            ant.timer=ant.getDelay(ant.delay);
-        }
+            model.newFood(model.randPos(ant.pos, 4), ant.load.weight);
         ant.load=false;
-        ant.speed=1.0;
-        ant.goal=constructor;
     }
 
-    static kick(ant) {
-        ant.run=false;
-        ant.target.target=ant;
+    static view(ant) {
+        ant.listTarget=ant.vision();
+        ant.timer=this.range;
+    }
+
+    static turn(ant) {
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        //шаг перед или назад,
-        ant.score+=100;
-        ant.timer=ant.getDelay(ant.delay*4);
-    }
-
-    static grab(ant) {
-        ant.run=false;
-        ant.goal=Colony;
-        let food=Math.min(ant.target.weight, Math.floor(ant.life*0.5+Math.random()*ant.life*0.5));
-        ant.target.weight-=food;
-        ant.load=new Food(ant.pos);
-        ant.load.weight=food;
-        ant.speed=1.0-food/200;
-        ant.timer=food;
-        ant.score+=50;
-        ant.life=100;
-        if (ant.target.weight<1)
-            model.delFood();
     }
 
     static move(ant) {
@@ -68,42 +41,130 @@ class Action {
         ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed-ant.speed*10);
     }
 
+    static drop(ant) {
+        ant.run=false;
+        model.newFood(ant.pos, ant.load.weight); // а если был камень?
+        ant.timer=ant.randDelay(ant.delay);
+        ant.load=false;
+        ant.speed=1.0;
+        ant.target=false;
+    }
+
+    static kick(ant) {
+        ant.run=false;
+        ant.listTarget.alien=ant.target;
+        ant.angle=ant.getAngle(ant.pos, ant.target);
+        ant.target.life-=10;
+        //анимация атаки
+        ant.score+=100;
+        ant.timer=ant.randDelay(ant.delay);
+        ant.target=false;
+    }
+
+    static fund(ant) {
+        ant.run=false;
+        ant.timer=ant.load.weight;
+        ant.target.weight+=ant.load.weight;
+        ant.life=100;
+        ant.score+=50;
+        ant.load=false;
+        ant.speed=1.0;
+        ant.target=false;
+    }
+
+    static grab(ant) {
+        ant.run=false;
+        let food=Math.min(ant.target.weight, Math.floor(ant.life*0.5+Math.random()*ant.life*0.5));
+        ant.target.weight-=food;
+        ant.load=new Food(ant.pos, food);
+        ant.speed=1.0-food/200;
+        ant.timer=food;
+        ant.score+=50;
+        ant.life=100;
+        if (ant.target.weight<1)
+            model.delFood();
+        ant.target=false;
+    }
+
     static back(ant) {
         ant.run=true;
-        ant.life=100;
-        if (ant.load instanceof Food)
-            ant.goal=Colony;
+        if (ant.listTarget.colony)
+            ant.target=ant.listTarget.colony;
+        else if (ant.listTarget.labAnt)
+            ant.target=ant.listTarget.labAnt;
         else
-            ant.goal=constructor;
+            ant.target=ant.listTarget.random;
         ant.angle=ant.getAngle(ant.pos, ant.target);
         ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed-ant.speed*2);
     }
 
     static find(ant) {
         ant.run=true;
-        ant.goal=Food;
+        if (ant.listTarget.food)
+            ant.target=ant.listTarget.food;
+        else if (ant.listTarget.alien)
+            ant.target=ant.listTarget.alien;
+        else if (ant.listTarget.labFood)
+            ant.target=ant.listTarget.labFood;
+        else if (ant.listTarget.ally)
+            ant.target=ant.listTarget.ally;
+        else if (ant.listTarget.rock && Math.round(Math.random()*0.5))
+            ant.target=ant.listTarget.rock;
+        else
+            ant.target=ant.listTarget.random;
         ant.angle=ant.getAngle(ant.pos, ant.target);
         ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed-ant.speed*2);
     }
 
     static info(ant) {
         ant.run=false;
+        ant.listTarget.ally=ant.target;
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        if (ant.score>ant.contact.score*0.75) {
-            //копирование весов нейронов
+        if (ant.score>ant.target.score*1.3) {
+            //копирование весов нейронов себе
             ant.score+=20;
         }
-        ant.timer=ant.getDelay(ant.delay*2);
+        ant.timer=ant.randDelay(ant.delay*2);
     }
 
     static flex(ant) {
         ant.speed=0;
         ant.run=true;
-        ant.timer=ant.getDelay(ant.delay*8);
+        //анимация танца
+        ant.timer=ant.randDelay(ant.delay*8);
     }
     
     static wait(ant) {
         ant.run=false;
-        ant.timer=ant.getDelay(ant.delay);
+        ant.timer=ant.randDelay(ant.delay);
+        ant.target=false;
     }
 }
+
+/*
+if (!this.load) {
+    if (this.listTarget.food)
+        this.target=this.listTarget.food;
+    else if (this.listTarget.alien)
+        this.target=this.listTarget.alien;
+    else if (this.listTarget.labFood)
+        this.target=this.listTarget.labFood;
+    else if (this.listTarget.ally)
+        this.target=this.listTarget.ally;
+    else if (this.listTarget.rock)
+        this.target=this.listTarget.rock;
+    else
+        this.target=this.listTarget.random;
+} else { // if (this.load)
+    if (this.listTarget.colony)
+        this.target=this.listTarget.colony;
+    else if (this.listTarget.labAnt)
+        this.target=this.listTarget.labAnt;
+    else
+        this.target=this.listTarget.random;
+}
+if (this.target instanceof Ant && this.target.color!=this.color)
+    this.listTarget.alien=this.target;
+if (this.target instanceof Ant && this.target.color==this.color)
+    this.listTarget.ally=this.target;
+*/

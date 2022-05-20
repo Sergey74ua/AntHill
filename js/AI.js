@@ -12,34 +12,43 @@ class PI {
     select(ant) {
         //Смерть - если жизни нет
         if (ant.life<=0)
-            ant.action=Action.dead;
-        //Сброс - если есть корм и (рядом свой муравейник или тебя атакуют)
-        else if (ant.load instanceof Rock || (ant.load && ((ant.target instanceof Colony && ant.target.color==ant.color && model.delta(ant.pos, ant.target)<ant.speed*12) || (ant.target instanceof Ant && ant.target.color!=ant.color))))
-            ant.action=Action.drop;
-        //Атака - если тебя атакуют или рядом чужой муравей с кормом
+            return Action.dead;
+        //Осмотреться, если нет цели /////////////////////
+        else if (false && !ant.listTarget.random)
+            return Action.view;
+        //Поворот на цель ////////////////////////////////
+        else if (false)
+            return Action.turn;
+        //Подход - если видна цель
+        else if (ant.target && model.delta(ant.pos, ant.target)>ant.speed*12)
+            return Action.move;
+        //Сброс - если есть корм и тебя атакует враг (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
+        else if (/*ant.load instanceof Rock || */(ant.load && ant.target instanceof Ant && ant.target.color!=ant.color && ant.target.life>0))
+            return Action.drop;
+        //Атака - если тебя атакуют или рядом чужой муравей с кормом (КАК ОН АТАКУЕТ САМ ???)
         else if (ant.target instanceof Ant && ant.target.color!=ant.color)
-            ant.action=Action.kick;
-        //Сбор - если нет корма и рядом корм
-        else if (!(ant.load instanceof Food) && (ant.target instanceof Food) && model.delta(ant.pos, ant.target)<ant.speed*12)
-            ant.action=Action.grab;
-        //Подход - если виден корм или муравейник
-        else if (ant.target instanceof ant.goal && !(ant.goal instanceof Colony && ant.target.color!=ant.color))
-            ant.action=Action.move;
+            return Action.kick;
+        //Выгрузка в муравейник
+        else if (ant.load && ant.target instanceof Colony)
+            return Action.fund;
+        //Сбор - если нет корма и рядом корм (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
+        else if (!ant.load && (ant.target instanceof Food /*|| ant.target instanceof Rock*/))
+            return Action.grab;
         //Возврат - если есть корм
         else if (ant.load instanceof Food)
-            ant.action=Action.back;
-        //Поиск - если нет корма и корм не виден
+            return Action.back;
+        //Поиск - если нет корма и нет других задач
         else if (!ant.load)
-            ant.action=Action.find;
-        //Обучение - если в контакте с союзником
-        else if (ant.target instanceof Ant && ant.target.score>ant.score)
-            ant.action=Action.info;
-        //Танец - если одолел противника
+            return Action.find;
+        //Обучение - если в контакте с союзником (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
+        else if (!ant.load && ant.target instanceof Ant && ant.target.color==ant.color)
+            return Action.info;
+        //Танец - к примеру, если одолел противника /////////////////////////////////
         else if (ant.target instanceof Ant && ant.target.life<1)
-            ant.action=Action.flex;
+            return Action.flex;
         //Ожидание - все прочее
         else
-            ant.action=Action.wait;
+            return Action.wait;
     }
 }
 

@@ -21,6 +21,7 @@ class Colony {
 
     //Обновление
     update() {
+        model.map[this.pos.x][this.pos.y]=this; //// ВРЕМЕННО, ПОКА МУРАВЬИ ПЕРЕКРЫВАЮТ СОЛОНИЮ НА КАРТЕ
         if (this.weight>100)
             this.timer--;
             if (this.timer<0) {
@@ -30,11 +31,12 @@ class Colony {
             }
         let listAnt=[];
         for (let ant of this.listAnt) {
-            ant.update();
-            if (ant.life<=-ant.delay*10)
-                model.newFood(ant.getPos(ant.pos), 100);
-            else
+            if (ant.timer<(-ant.delay*10))
+                model.newFood(model.randPos(ant.pos, 4), 100);
+            else {
                 listAnt.push(ant);
+                ant.update();
+            }
         }
         this.listAnt=listAnt;
     }

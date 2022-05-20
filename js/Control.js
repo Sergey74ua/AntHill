@@ -6,7 +6,7 @@ class Control {
         this.game=true;
         this.focus=false;
         this.info=false;
-        this.fps=40;
+        this.fps=1000/75;
         
         this.btnPlay=document.getElementById('play');
         this.btnClear=document.getElementById('clear');

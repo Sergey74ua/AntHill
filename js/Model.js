@@ -33,19 +33,19 @@ class Model {
         }
         //Колонии
         for (let i=0; i<this.base; i++) {
-            let colony=new Colony(i, this.rndPos(), this.food);
+            let colony=new Colony(i, this.randPos(), this.food);
             this.listColony.push(colony);
             this.map[colony.pos.x][colony.pos.y]=colony;
         }
         //Камни
         for (let i=0; i<this.base*10; i++) {
-            let rock=new Rock(this.rndPos());
+            let rock=new Rock(this.randPos());
             this.listRock.push(rock);
             this.map[rock.pos.x][rock.pos.y]=rock;
         }
         //Корм
         for (let i=0; i<this.base*20; i++)
-            this.newFood(this.rndPos());
+            this.newFood(this.randPos());
     }
 
     //Обновление
@@ -113,37 +113,16 @@ class Model {
             this.air[pos.x][pos.y].weight--;
     }
 
-    //Обзор юнита
-    vision(ant) {
-        if (ant.target instanceof Ant) //атака или запрос знаний
-            return ant.target;
-        for (let i=1; i<=ant.range; i++) {
-            let sector=this.getSector(ant.pos, i);
-            for (let j=sector.left; j<=sector.right; j++) {
-                if (this.map[j][sector.top] instanceof ant.goal)
-                    return this.map[j][sector.top];
-                if (this.map[j][sector.bottom] instanceof ant.goal)
-                    return this.map[j][sector.bottom];
-            };
-            for (let j=sector.top+1; j<=sector.bottom-1; j++) {
-                if (this.map[sector.left][j] instanceof ant.goal)
-                    return this.map[sector.left][j];
-                if (this.map[sector.right][j] instanceof ant.goal)
-                    return this.map[sector.right][j];
-            };
-        };
-        return {pos: this.rndPos(ant.pos, ant.range)};
-    }
-
     //Случайная позиция
-    rndPos(pos={x: this.size.width/2, y: this.size.height/2}, range=Math.max(this.size.width, this.size.height)) {
+    randPos(pos={x: this.size.width/2, y: this.size.height/2}, range=Math.max(this.size.width, this.size.height)) {
         let sector=this.getSector(pos, range);
         let collision=true;
         while (collision) {
             pos={
-                x: Math.round(Math.random()*(sector.right-sector.left)+sector.left),
-                y: Math.round(Math.random()*(sector.bottom-sector.top)+sector.top)
+                x: Math.random()*(sector.right-sector.left)+sector.left,
+                y: Math.random()*(sector.bottom-sector.top)+sector.top
             };
+            pos=this.roundPos(pos);
             if (this.map[pos.x][pos.y]===false)
                 collision=false;
         }
@@ -158,6 +137,11 @@ class Model {
             top: Math.max(pos.y-range, 0),
             bottom: Math.min(pos.y+range, this.size.height-1)
         };
+    }
+
+    //Округление координат позиции
+    roundPos(pos) {
+        return {x: Math.round(pos.x), y: Math.round(pos.y)};
     }
 
     //Расстояние до цели
