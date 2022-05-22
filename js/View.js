@@ -46,22 +46,7 @@ class View {
 }
 
 /*
-ЗАГРУЗКА
-- инициализация базовых данных для отрисовки
-
-СТАРТ/РЕСТАРТ
-- перерисовка
-
-ШАГ ИГРЫ
-- отрисовка фона
-- отрисовка предметов
-- отрисовка меток
-- отрисовка муравьев
-- отрисовка интерфейса
-*/
-
 //Синхронизация canvas с кадрами экрана
-/*
 window.requestAnimationFrame=( function() {
 	return	window.requestAnimationFrame     ||
 			window.webkitRequestAnimationFrame  ||
@@ -72,10 +57,8 @@ window.requestAnimationFrame=( function() {
 				window.setTimeout(callback, 1000/60);
 			}
 })();
-*/
 
 //Вывод FPS
-/*
 let fps=document.getElementById('fps');
 let frameCount = function _fc(fastTimeStart, preciseTimeStart){
     let now = performance.now();

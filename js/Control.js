@@ -81,34 +81,20 @@ class Control {
         else
             this.btnPlay.innerHTML='<i class="fa fa-play" aria-hidden="true"></i>';
     }
-
-    /*
-    - window.addEventListener('resize', onResize);
-    //Размер игровой карты
-    resize() {
-        if (this.size.width<=canvas.width)
-            this.size.width=canvas.width;
-        else
-            this.size.width=this.size.width; //Проверка на наличие объектов
-        if (this.size.height<=canvas.height)
-            this.size.height=canvas.height;
-        else
-            this.size.height=this.size.height; //Проверка на наличие объектов
-        ctx.shadowColor='Black';
-    }
-    */
 }
 
 /*
-ЗАГРУЗКА
-- инициализация базовых данных управления:
-    -- старт/пауза
-    -- сохранение/загрузка
-    -- рестарт (сохранение)
-
-СТАРТ/РЕСТАРТ
-- сброс базовых данных
-
-ШАГ ИГРЫ
-- игровой цикл
+- window.addEventListener('resize', onResize);
+//Размер игровой карты
+resize() {
+    if (this.size.width<=canvas.width)
+        this.size.width=canvas.width;
+    else
+        this.size.width=this.size.width; //Проверка на наличие объектов
+    if (this.size.height<=canvas.height)
+        this.size.height=canvas.height;
+    else
+        this.size.height=this.size.height; //Проверка на наличие объектов
+    ctx.shadowColor='Black';
+}
 */

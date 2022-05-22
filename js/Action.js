@@ -20,7 +20,7 @@ class Action {
     
     static dead(ant) {
         ant.run=false;
-        ant.color=Block.color;
+        ant.color='#00000040';
         if (ant.load instanceof Food) // а если был камень?
             model.newFood(model.randPos(ant.pos, 4), ant.load.weight);
         ant.load=false;

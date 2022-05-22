@@ -7,7 +7,7 @@ class Model {
             width: window.innerWidth,
             height: window.innerHeight
         };
-        this.base=4;
+        this.base=5;
         this.food=256;
         this.map=[];
         this.air=[];
@@ -21,7 +21,7 @@ class Model {
 
     //Инициализация карты
     init() {
-        //Карта
+        //Карты
         for (let x=0; x<this.size.width; x++) {
             this.map[x]=[];
             this.air[x]=[];
@@ -33,7 +33,15 @@ class Model {
         }
         //Колонии
         for (let i=0; i<this.base; i++) {
-            let colony=new Colony(i, this.randPos(), this.food);
+            let section=Math.PI*2/this.base*i-Math.PI/2+Math.PI/this.base*((this.base+1)%2);
+            let radius=Math.min(this.size.width, this.size.height);
+            radius=(radius-radius/this.base)/2;
+            let pos={
+                x: this.size.width/2+radius*Math.cos(section), 
+                y: this.size.height/2+radius*Math.sin(section)
+            };
+            pos=this.roundPos(pos);
+            let colony=new Colony(i, this.randPos(pos), this.food);
             this.listColony.push(colony);
             this.map[colony.pos.x][colony.pos.y]=colony;
         }
@@ -51,7 +59,12 @@ class Model {
     //Обновление
     update() {
         for (let colony of this.listColony)
-            colony.update();
+            if (colony.weight && colony.weight<100 && colony.listAnt.length<1) {
+                colony.color='#00000060';
+                this.newFood(this.randPos(colony.pos, 4), colony.weight);
+                colony.weight=false;
+            } else
+                colony.update();
         //Испарение меток
         let listLabel=[];
         for (let label of this.listLabel) {
@@ -116,15 +129,12 @@ class Model {
     //Случайная позиция
     randPos(pos={x: this.size.width/2, y: this.size.height/2}, range=Math.max(this.size.width, this.size.height)) {
         let sector=this.getSector(pos, range);
-        let collision=true;
-        while (collision) {
+        while (this.map[pos.x][pos.y]!==false) {
             pos={
                 x: Math.random()*(sector.right-sector.left)+sector.left,
                 y: Math.random()*(sector.bottom-sector.top)+sector.top
             };
             pos=this.roundPos(pos);
-            if (this.map[pos.x][pos.y]===false)
-                collision=false;
         }
         return pos;
     }
@@ -148,44 +158,33 @@ class Model {
     delta(pos, target) {
         return Math.sqrt(Math.pow(target.pos.x-pos.x, 2)+Math.pow(target.pos.y-pos.y, 2));
     }
-    /*
-    //Сохранение игры (ДОРАБОТАТЬ)
-    save() {
-        var blob=new Blob(["Тестовый текст ..."],
-            {type: "text/plain; charset=utf-8"});
-        saveAs(blob, "save_"+new Date().toJSON().slice(0,10)+".txt");
-    }
-
-    //Загрузка игры (ДОРАБОТАТЬ)
-    load() {
-        ;
-    }
-    */
 }
 
 /*
-ЗАГРУЗКА
-- инициализация базовых данных для рассчета
-- карты:
-    -- ландшафт (двумерный массив с объектами)
-    -- ароматы (массив координат и вес)
-        --- свой
-        --- колонии
-        --- общий
+//Сохранение игры (ДОРАБОТАТЬ)
+save() {
+    var blob=new Blob(["Тестовый текст ..."],
+        {type: "text/plain; charset=utf-8"});
+    saveAs(blob, "save_"+new Date().toJSON().slice(0,10)+".txt");
+}
 
-СТАРТ/РЕСТАРТ
-- размещение колоний, корма и камней
-- сохранение весов нейросети
-- обнуление счетчиков
+//Загрузка игры (ДОРАБОТАТЬ)
+load() {
+    ;
+}
 
-ШАГ ИГРЫ
-- Обход действий муравьев
-- Перерассчет ресурсов колоний
-- Испарение меток
-*/
-
-/* ПРОВЕРКА ТОЧКИ НА ВХОЖДЕНИЕ В КАНВАС
+ПРОВЕРКА ТОЧКИ НА ВХОЖДЕНИЕ В КАНВАС
 if (ctx.isPointInPath(20,50)) {
     ctx.stroke();
 };
+
+ТЗ детям:
+1. Прозрачность 25% мертвого муравья
+2. $Мертвая колония если нет муравьев и корма, черная с прозрачностью 50% +сброс корма
+3. Антиколизия на карте в функции rndPos (если точка не пустая, ставить рандомнго рядом)
+4. Во всем коде подключить эту функцию.
+5. Выделить в отдельную функцию создание корма.
+6. Перенести функцию vision в Ant.
+7. Проверку на пустоту корма вынести отдельно.
+8. Расширить функцию newLabel на случаи наложения разных и одинаковых меток с пределом
 */

@@ -4,8 +4,8 @@ class Colony {
     //Палитра по умолчанию
     pallet=[
         'SaddleBrown',
-        'DarkKhaki',
-        'DimGrey',
+        'OrangeRed',
+        'Olive',
         'Maroon'
     ];
 
@@ -21,7 +21,6 @@ class Colony {
 
     //Обновление
     update() {
-        model.map[this.pos.x][this.pos.y]=this; //// ВРЕМЕННО, ПОКА МУРАВЬИ ПЕРЕКРЫВАЮТ СОЛОНИЮ НА КАРТЕ
         if (this.weight>100)
             this.timer--;
             if (this.timer<0) {
@@ -39,6 +38,7 @@ class Colony {
             }
         }
         this.listAnt=listAnt;
+        model.map[this.pos.x][this.pos.y]=this; //Аварийное обновление на карте
     }
 
     //Отрисовка
