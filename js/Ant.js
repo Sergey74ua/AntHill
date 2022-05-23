@@ -19,8 +19,8 @@ class Ant {
         this.target=false;
         this.angle=false;
         this.action=Action.wait;
-        this.score=0;
         this.listTarget=this.vision();
+        this.score=0;
     }
 
     //Обновление

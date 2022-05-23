@@ -32,13 +32,24 @@ class Action {
     }
 
     static turn(ant) {
+        ant.timer=Math.round(Math.abs(ant.angle-ant.getAngle(ant.pos, ant.target))/3.0);
         ant.angle=ant.getAngle(ant.pos, ant.target);
+        
+        /*let angle=(ant.angle*180/Math.PI+450)%360;
+        //Текущий угол поворота к цели
+        if (Math.abs(ant.angle-angle)>3.0) {
+            if ((ant.angle < angle && (angle - ant.angle) < 180) ^ (angle - ant.angle) > -180)
+                ant.angle = (ant.angle - 3.0 + 360) % 360;
+            else
+                ant.angle = (ant.angle + 3.0) % 360;
+        } else
+            ant.angle = angle;*/
     }
 
     static move(ant) {
         ant.run=true;
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed-ant.speed*10);
+        ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed-10/ant.speed);
     }
 
     static drop(ant) {
@@ -95,7 +106,7 @@ class Action {
         else
             ant.target=ant.listTarget.random;
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed-ant.speed*2);
+        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed-10/ant.speed);
     }
 
     static find(ant) {
@@ -113,7 +124,7 @@ class Action {
         else
             ant.target=ant.listTarget.random;
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed-ant.speed*2);
+        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed-10/ant.speed);
     }
 
     static info(ant) {
@@ -131,7 +142,7 @@ class Action {
         ant.speed=0;
         ant.run=true;
         //анимация танца
-        ant.timer=ant.randDelay(ant.delay*8);
+        ant.timer=ant.randDelay(ant.delay*5);
     }
     
     static wait(ant) {

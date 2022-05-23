@@ -38,7 +38,7 @@ class Colony {
             }
         }
         this.listAnt=listAnt;
-        model.map[this.pos.x][this.pos.y]=this; //Аварийное обновление на карте
+        //model.map[this.pos.x][this.pos.y]=this; //Аварийное обновление на карте
     }
 
     //Отрисовка

@@ -17,10 +17,10 @@ class PI {
         else if (false && !ant.listTarget.random)
             return Action.view;
         //Поворот на цель ////////////////////////////////
-        else if (false)
+        else if (false && ant.target && Math.abs(ant.angle-ant.getAngle(ant.pos, ant.target))>3.0)
             return Action.turn;
         //Подход - если видна цель
-        else if (ant.target && model.delta(ant.pos, ant.target)>ant.speed*12)
+        else if (ant.target && model.delta(ant.pos, ant.target)>=10/ant.speed)
             return Action.move;
         //Сброс - если есть корм и тебя атакует враг (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
         else if (/*ant.load instanceof Rock || */(ant.load && ant.target instanceof Ant && ant.target.color!=ant.color && ant.target.life>0))
@@ -103,6 +103,6 @@ class AI {
             n5=ant.action,
             n6=ant.listTarget //////////////////
         ];
-        return 0;
+        return neron.n1;
     };
 }
