@@ -43,8 +43,7 @@ class Colony {
 
     //Отрисовка
     draw(ctx) {
-        let grad=ctx.createRadialGradient(this.pos.x, this.pos.y, 8,
-            this.pos.x, this.pos.y, 32);
+        let grad=ctx.createRadialGradient(this.pos.x, this.pos.y, 8, this.pos.x, this.pos.y, 32);
         grad.addColorStop(0, this.color);
         grad.addColorStop(1, 'transparent');
         ctx.fillStyle=grad;

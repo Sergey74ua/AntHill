@@ -1,4 +1,8 @@
 //Симулятор колонии муравьев
+const
+    FPS=75;
+    BASE=5;
+    SIZE=2;
 
 var model, view, control;
 

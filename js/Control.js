@@ -6,7 +6,6 @@ class Control {
         this.game=true;
         this.focus=false;
         this.info=false;
-        this.fps=1000/75;
         
         this.btnPlay=document.getElementById('play');
         this.btnClear=document.getElementById('clear');
@@ -17,7 +16,7 @@ class Control {
 
         onclick=(e) => this.onClick(e);
         onkeydown=(e) => this.onKeyDown(e);
-        setInterval(() => this.update(), this.fps);
+        setInterval(() => this.update(), 1000/FPS);
     }
 
     //Обновление

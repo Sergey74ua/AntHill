@@ -45,6 +45,31 @@ class View {
     }
 }
 
+class Flyweight {
+    static Pi05=Math.PI/2;
+    static Pi2=Math.PI*2;
+
+    //Статичные данные
+    constructor() {
+        this.size=SIZE;
+        this.line=this.size*0.2;
+        this.size025=this.size*0.25;
+        this.size05=this.size*0.5;
+        this.size125=this.size*1.25;
+        this.size15=this.size*1.5;
+        this.size2=this.size*2;
+        this.size22=this.size*2.2;
+        this.size25=this.size*2.5;
+        this.size28=this.size*2.8;
+        this.size3=this.size*3;
+        this.size35=this.size*3.5;
+        this.size4=this.size*4;
+        this.size45=this.size*4.5;
+        this.size6=this.size*6;
+        this.size8=this.size*8;
+    }
+}
+
 /*
 //Синхронизация canvas с кадрами экрана
 window.requestAnimationFrame=( function() {
