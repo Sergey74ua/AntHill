@@ -4,7 +4,9 @@ const
     BASE=5;
     SIZE=2;
 
-var model, view, control;
+var model,
+    view,
+    control;
 
 let listClass=[
     'AI',

@@ -33,7 +33,7 @@ class Control {
                 x: e.clientX,
                 y: e.clientY
             };
-            model.newFood(pos);
+            model.newFood(model.randPos(pos, 4));
         }
         this.focus=false;
     }

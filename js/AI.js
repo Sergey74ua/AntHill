@@ -3,7 +3,7 @@
 class RI {
     //Рандомный интеллект
     select(ant) {
-        ant.action=Action.listAction[Math.floor(Math.random()*Action.listAction.length)];
+        return Action.listAction[Math.floor(Math.random()*Action.listAction.length)];
     }
 }
 
@@ -91,6 +91,9 @@ class AI {
     }
 
     select(ant) {
+        //Смерть - если жизни нет
+        /*if (ant.life<=0)
+            return Action.dead;*/
         ant.action=Action.listAction[getAct(ant)];
     }
 
