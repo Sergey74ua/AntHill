@@ -137,16 +137,12 @@ class Ant {
         for (let i=1; i<=this.range; i++) {
             let sector=model.getSector(this.pos, i);
             for (let j=sector.left; j<=sector.right; j++) {
-                if (model.map[j][sector.top])
-                    this.memory(model.map[j][sector.top]);
-                if (model.map[j][sector.bottom])
-                    this.memory(model.map[j][sector.bottom]);
+                this.memory(model.map[j][sector.top], model.air[j][sector.top]);
+                this.memory(model.map[j][sector.bottom], model.air[j][sector.bottom]);
             };
             for (let j=sector.top+1; j<=sector.bottom-1; j++) {
-                if (model.map[sector.left][j])
-                    this.memory(model.map[sector.left][j]);
-                if (model.map[sector.right][j])
-                    this.memory(model.map[sector.right][j]);
+                this.memory(model.map[sector.left][j], model.air[sector.left][j]);
+                this.memory(model.map[sector.right][j], model.air[sector.right][j]);
             };
         };
         this.listTarget.random={pos: model.randPos(this.pos, this.range)};
@@ -154,7 +150,7 @@ class Ant {
     }
 
     //Запоминаем объекты
-    memory(point) {
+    memory(point, smell) {
         if (!this.listTarget.food && point instanceof Food)
             this.listTarget.food=point;
         else if (point instanceof Rock)
@@ -164,11 +160,11 @@ class Ant {
                 this.listTarget.ally=point;
             else if (point.color!=this.color && point.load instanceof Food)
                 this.listTarget.alien=point;
-        } else if (point instanceof Label) {
-            if (point.color==Food.color && point.weight<this.listTarget.labFood.weight)
-                this.listTarget.labFood=point;
-            else if (point.color==this.color && point.weight>this.listTarget.labAnt.weight)
-                this.listTarget.labAnt=point; //НУЖНО ИСКЛЮЧИТЬ СВОЙ СЛЕД
+        } else if (smell instanceof Label) {
+            if (smell.color==Food.color && smell.weight<this.listTarget.labFood.weight)
+                this.listTarget.labFood=smell;
+            else if (smell.color==this.color && smell.weight>this.listTarget.labAnt.weight)
+                this.listTarget.labAnt=smell; //НУЖНО ИСКЛЮЧИТЬ СВОЙ СЛЕД
         } else if (point instanceof Colony && point.color==this.color)
             this.listTarget.colony=point;
     }

@@ -3,7 +3,10 @@
 class RI {
     //Рандомный интеллект
     select(ant) {
-        return Action.listAction[Math.floor(Math.random()*Action.listAction.length)];
+        if (ant.life<=0)
+            return Action.dead;
+        else
+            return Action.listAction[Math.floor(Math.random()*Action.listAction.length)];
     }
 }
 
@@ -56,11 +59,11 @@ class AI {
     //Искуственный интеллект (нейросеть)
     constructor() {
         input={
+            run: 0,
             life: 1,
             loss: 0,
             food: 0,
             rock: 0,
-            run: 0,
             dead: 0,
             drop: 0,
             kick: 0,
