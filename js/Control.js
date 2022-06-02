@@ -1,7 +1,7 @@
-//Симулятор колонии муравьев
+// Симулятор колонии муравьев
 
 class Control {
-    //Управление
+    // Управление
     constructor() {
         this.game=true;
         this.focus=false;
@@ -19,14 +19,14 @@ class Control {
         setInterval(() => this.update(), 1000/FPS);
     }
 
-    //Обновление
+    // Обновление
     update() {
         if (this.game)
             model.update();
         view.draw();
     }
 
-    //Отслеживае кликов мышки
+    // Отслеживае кликов мышки
     onClick(e) {
         if (!this.focus) {
             let pos={
@@ -38,7 +38,7 @@ class Control {
         this.focus=false;
     }
 
-    //Отслеживае клавиатуры
+    // Отслеживае клавиатуры
     onKeyDown(e) {
         e.preventDefault();
 		switch(e.keyCode) {
@@ -51,29 +51,38 @@ class Control {
 		}
     }
     
-    //Кнопка старт/пауза
+    // Кнопка старт/пауза
     play() {
         this.focus=true;
         this.game=!this.game;
         this.btnName();
     }
 
-    //Кнопка очистка
+    // Кнопка очистка
     clear() {
         this.focus=true;
         //this.play=false;
         this.btnName();
-        //Предложение сохранения
+        // Предложение сохранения
         model=new Model();
     }
 
-    //Кнопка сохранения
+    // Кнопка сохранения (ДОРАБОТАТЬ)
     save() {
         this.focus=true;
         console.log('Кнопка Save');
+        var blob=new Blob([
+            "Тестовый текст ..."
+        ], {type: "text/plain; charset=utf-8"});
+        saveAs(blob, "save_"+new Date().toJSON().slice(0,10)+".txt");
     }
 
-    //Функция старт/пауза
+    // Загрузка игры (ДОРАБОТАТЬ)
+    load() {
+        ;
+    }
+
+    // Функция старт/пауза
     btnName() {
         if (this.game)
             this.btnPlay.innerHTML='<i class="fa fa-pause" aria-hidden="true"></i>';
@@ -84,7 +93,7 @@ class Control {
 
 /*
 - window.addEventListener('resize', onResize);
-//Размер игровой карты
+// Размер игровой карты
 resize() {
     if (this.size.width<=canvas.width)
         this.size.width=canvas.width;

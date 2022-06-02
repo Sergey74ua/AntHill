@@ -1,7 +1,7 @@
-//Симулятор колонии муравьев
+// Симулятор колонии муравьев
 
 class Action {
-    //Действия муравья
+    // Действия муравья
     static listAction=[
         Action.dead,
         Action.view,
@@ -21,17 +21,19 @@ class Action {
     static dead(ant) {
         ant.run=false;
         ant.color='#00000040';
-        if (ant.load instanceof Food) // а если был камень?
+        if (ant.load instanceof Food)
             model.newFood(model.randPos(ant.pos, 4), ant.load.weight);
+        else if (ant.load instanceof Rock)
+            model.newRock(model.randPos(ant.pos, 4));
         ant.load=false;
     }
 
-    static view(ant) {
+    static view(ant) { /////////////////////////////
         ant.listTarget=ant.vision();
         ant.timer=this.range;
     }
 
-    static turn(ant) {
+    static turn(ant) { /////////////////////////////
         ant.timer=Math.round(Math.abs(ant.angle-ant.getAngle(ant.pos, ant.target))/3.0);
         ant.angle=ant.getAngle(ant.pos, ant.target);
         
@@ -66,7 +68,7 @@ class Action {
         ant.listTarget.alien=ant.target;
         ant.angle=ant.getAngle(ant.pos, ant.target);
         ant.target.life-=10;
-        //анимация атаки
+        // Анимация атаки
         ant.score+=100;
         ant.timer=ant.randDelay(ant.delay);
         ant.target=false;
@@ -132,7 +134,7 @@ class Action {
         ant.listTarget.ally=ant.target;
         ant.angle=ant.getAngle(ant.pos, ant.target);
         if (ant.score>ant.target.score*1.3) {
-            //копирование весов нейронов себе
+            // Копирование весов нейронов себе
             ant.score+=20;
         }
         ant.timer=ant.randDelay(ant.delay*2);
@@ -141,7 +143,7 @@ class Action {
     static flex(ant) {
         ant.speed=0;
         ant.run=true;
-        //анимация танца
+        // Анимация танца
         ant.timer=ant.randDelay(ant.delay*5);
     }
     
@@ -151,31 +153,3 @@ class Action {
         ant.target=false;
     }
 }
-
-/*
-if (!this.load) {
-    if (this.listTarget.food)
-        this.target=this.listTarget.food;
-    else if (this.listTarget.alien)
-        this.target=this.listTarget.alien;
-    else if (this.listTarget.labFood)
-        this.target=this.listTarget.labFood;
-    else if (this.listTarget.ally)
-        this.target=this.listTarget.ally;
-    else if (this.listTarget.rock)
-        this.target=this.listTarget.rock;
-    else
-        this.target=this.listTarget.random;
-} else { // if (this.load)
-    if (this.listTarget.colony)
-        this.target=this.listTarget.colony;
-    else if (this.listTarget.labAnt)
-        this.target=this.listTarget.labAnt;
-    else
-        this.target=this.listTarget.random;
-}
-if (this.target instanceof Ant && this.target.color!=this.color)
-    this.listTarget.alien=this.target;
-if (this.target instanceof Ant && this.target.color==this.color)
-    this.listTarget.ally=this.target;
-*/

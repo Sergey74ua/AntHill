@@ -1,14 +1,14 @@
-//Симулятор колонии муравьев
+// Симулятор колонии муравьев
 
 class View {
-    //Представление
+    // Представление
     constructor() {
         this.canvas=document.getElementById('canvas');
         this.onResize();
         window.addEventListener('resize', this.onResize);
     }
 
-    //Отрисовка экрана
+    // Отрисовка экрана
     draw() {
         this.ctx.fillStyle='DarkGreen';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -33,7 +33,7 @@ class View {
             colony.draw(this.ctx);
     }
 
-    //Выравнивание экрана по размерам окна
+    // Выравнивание экрана по размерам окна
     onResize() {
         this.canvas.width=model.size.width;
         this.canvas.height=model.size.height;
@@ -49,7 +49,7 @@ class Flyweight {
     static Pi05=Math.PI/2;
     static Pi2=Math.PI*2;
 
-    //Статичные данные
+    // Статичные данные
     constructor() {
         this.size=SIZE;
         this.line=this.size*0.2;

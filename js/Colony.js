@@ -1,7 +1,7 @@
-//Симулятор колонии муравьев
+// Симулятор колонии муравьев
 
 class Colony {
-    //Палитра по умолчанию
+    // Палитра по умолчанию
     pallet=[
         'SaddleBrown',
         'OrangeRed',
@@ -19,7 +19,7 @@ class Colony {
         this.timer=this.delay/4;
     }
 
-    //Обновление
+    // Обновление
     update() {
         if (this.weight>100)
             this.timer--;
@@ -41,7 +41,7 @@ class Colony {
         //model.map[this.pos.x][this.pos.y]=this; //Аварийное обновление на карте
     }
 
-    //Отрисовка
+    // Отрисовка
     draw(ctx) {
         let grad=ctx.createRadialGradient(this.pos.x, this.pos.y, 8, this.pos.x, this.pos.y, 32);
         grad.addColorStop(0, this.color);
@@ -51,7 +51,7 @@ class Colony {
         ctx.arc(this.pos.x, this.pos.y, 32, 0, Math.PI*2);
         ctx.fill();
         ctx.closePath();
-        //Информация
+        // Информация
         if (control.info) {
             ctx.fillStyle='White';
             ctx.font="8pt Arial";
@@ -59,7 +59,7 @@ class Colony {
         }
     }
     
-    //Цвет колонии
+    // Цвет колонии
     getColor(i) {
         let color;
         if (i<this.pallet.length)

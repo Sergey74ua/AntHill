@@ -1,7 +1,7 @@
-//Симулятор колонии муравьев
+// Симулятор колонии муравьев
 
 class Items {
-    //Абстрактный класс для объектов
+    // Абстрактный класс для объектов
     constructor(pos) {
         this.pos={
             x: pos.x,
@@ -20,7 +20,7 @@ class Items {
 
 class Block extends Items {
     static color='#1b2b20';
-    //Преграды - непроходимые, непереносимые
+    // Преграды - непроходимые, непереносимые
     constructor(pos) {
         super(pos);
         this.color=Block.color;
@@ -29,7 +29,7 @@ class Block extends Items {
 
 class Rock extends Items {
     static color='SteelBlue';
-    //Камни - непроходимые, переносимые
+    // Камни - непроходимые, переносимые
     constructor(pos) {
         super(pos);
         this.color=Rock.color;
@@ -39,7 +39,7 @@ class Rock extends Items {
 
 class Food extends Items {
     static color='Brown';
-    //Корм - непроходим, переносим и съедобен
+    // Корм - непроходим, переносим и съедобен
     constructor(pos, weight) {
         super(pos);
         this.color=Food.color;
@@ -48,7 +48,7 @@ class Food extends Items {
 
     draw(ctx) {
         super.draw(ctx);
-        //Информация
+        // Информация
         if (control.info) {
             ctx.fillStyle='black';
             ctx.font="6pt Arial";
@@ -58,7 +58,7 @@ class Food extends Items {
 }
 
 class Label {
-    //Метки - запах корма и муравьев
+    // Метки - запах корма и муравьев
     constructor(color, pos) {
         this.pos={
             x: pos.x,

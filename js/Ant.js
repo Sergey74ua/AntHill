@@ -1,12 +1,12 @@
-//Симулятор колонии муравьев
+// Симулятор колонии муравьев
 
 class Ant {
-    //Муравей
+    // Муравей
     constructor(colony) {
         this.color=colony.color;
         this.pos=model.randPos(colony.pos, 4);
         this.ai=colony.ai;
-        //веса нейронов
+        // веса нейронов
         this.life=100.0;
         this.load=false;
         this.speed=1.0;
@@ -23,80 +23,80 @@ class Ant {
         this.score=0;
     }
 
-    //Обновление
+    // Обновление
     update() {
         this.timer--;
         this.life-=0.01;
-        //Смена режима
+        // Смена режима
         if (this.timer<=0) {
-            this.listTarget=this.vision(); //// ПЕРЕНЕСТИ В ДЕЙСТВИЯ ?
+            this.listTarget=this.vision();
             this.action=this.ai.select(this);
             this.action(this);
         }
-        //Движение муравья
+        // Движение муравья
         if (this.run)
             this.goStep();
     }
 
-    //Отрисовка
+    // Отрисовка
     draw(ctx, fw) {
         let x=this.pos.x, y=this.pos.y, angle=this.angle;
         let pose=this.pose*0.5;
-        //Смена координат для поворота
+        // Смена координат для поворота
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(angle);
         ctx.translate(-x, -y);
-        //Корм
+        // Корм
         if (this.load) {
             this.load.pos={x: x, y: y-fw.size4};
             this.load.draw(ctx);
         }
-        //Цвета и линии
+        // Цвета и линии
         ctx.lineWidth=this.line;
         ctx.strokeStyle='Black';
         ctx.fillStyle=this.color;
-        //Тени
+        // Тени
         ctx.shadowBlur=3;
         ctx.shadowOffsetX=2;
         ctx.shadowOffsetY=1;
-        //Лапки 1-4
+        // Лапки 1-4
         ctx.beginPath();
         ctx.moveTo(x-fw.size25, y-fw.size3-pose*2);
         ctx.lineTo(x-fw.size2, y-fw.size15-pose);
         ctx.lineTo(x+fw.size28, y+fw.size2+pose*2);
         ctx.lineTo(x+fw.size4, y+fw.size6+pose*4);
-        //Лапки 2-5
+        // Лапки 2-5
         ctx.moveTo(x-fw.size35, y+fw.size+pose);
         ctx.lineTo(x-fw.size22, y-fw.size025+pose);
         ctx.lineTo(x+fw.size22, y+fw.size025-pose);
         ctx.lineTo(x+fw.size35, y+fw.size15-pose);
-        //Лапки 3-6
+        // Лапки 3-6
         ctx.moveTo(x-fw.size4, y+fw.size8-pose*4);
         ctx.lineTo(x-fw.size28, y+fw.size3-pose*2);
         ctx.lineTo(x+fw.size2, y-fw.size2+pose);
         ctx.lineTo(x+fw.size25, y-fw.size4+pose*2);
         ctx.stroke();
         ctx.closePath();
-        //Грудь
+        // Грудь
         ctx.beginPath();
         ctx.arc(x, y, fw.size, 0, Flyweight.Pi2);
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
-        //Голова
+        // Голова
         ctx.beginPath();
         ctx.ellipse(x, y-fw.size2, fw.size125, fw.size, 0, 0, Flyweight.Pi2);
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
-        //Брюшко
+        // Брюшко
         ctx.beginPath();
         ctx.ellipse(x, y+fw.size35, fw.size15, fw.size25, 0, 0, Flyweight.Pi2);
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
-        //Усики
+        // Усики
         ctx.beginPath();
         ctx.moveTo(x-fw.size05, y-fw.size22);
         ctx.lineTo(x-fw.size15+pose*0.5, y-fw.size45);
@@ -104,24 +104,24 @@ class Ant {
         ctx.lineTo(x+fw.size15-pose*0.5, y-fw.size45);
         ctx.stroke();
         ctx.closePath();
-        //Сброс координат
+        // Сброс координат
         ctx.restore();
         ctx.shadowBlur=0;
         ctx.shadowOffsetX=0;
         ctx.shadowOffsetY=0;
-        //Информация
+        // Информация
         if (control.info) {
-            //Диапазон всего обзора
+            // Диапазон всего обзора
             ctx.strokeStyle='Lime';
             ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
-            //Информация муравья
+            // Информация муравья
             ctx.fillStyle=this.color;
             ctx.font="7pt Arial";
             ctx.fillText(this.action.name+' '+this.timer, x, y-16);
         }
     }
     
-    //Осматриваем карту
+    // Осматриваем карту
     vision() {
         this.listTarget={
             colony: false,
@@ -149,9 +149,12 @@ class Ant {
         return this.listTarget;
     }
 
-    //Запоминаем объекты
+    // Запоминаем объекты
     memory(point, smell) {
-        if (!this.listTarget.food && point instanceof Food)
+        // Видимые
+        if (point instanceof Colony && point.color==this.color)
+            this.listTarget.colony=point;
+        else if (!this.listTarget.food && point instanceof Food)
             this.listTarget.food=point;
         else if (point instanceof Rock)
             this.listTarget.rock=point;
@@ -160,16 +163,17 @@ class Ant {
                 this.listTarget.ally=point;
             else if (point.color!=this.color && point.load instanceof Food)
                 this.listTarget.alien=point;
-        } else if (smell instanceof Label) {
+        }
+        // По запаху
+        if (smell instanceof Label) {
             if (smell.color==Food.color && smell.weight<this.listTarget.labFood.weight)
                 this.listTarget.labFood=smell;
             else if (smell.color==this.color && smell.weight>this.listTarget.labAnt.weight)
                 this.listTarget.labAnt=smell; //НУЖНО ИСКЛЮЧИТЬ СВОЙ СЛЕД
-        } else if (point instanceof Colony && point.color==this.color)
-            this.listTarget.colony=point;
+        }
     }
 
-    //Смена шагов
+    // Смена шагов
     goStep() {
         let pos=model.roundPos(this.pos);
         model.map[pos.x][pos.y]=false;
@@ -190,12 +194,12 @@ class Ant {
             this.step--;
     }
 
-    //Поворот на цель
+    // Поворот на цель
     getAngle(pos, target) {
         return Math.atan2(target.pos.y-pos.y, target.pos.x-pos.x)+Flyweight.Pi05;
     }
 
-    //Случайная длительность действия
+    // Случайная длительность действия
     randDelay(delay) {
         return Math.round(delay*0.667+Math.random()*delay*0.667);
     }

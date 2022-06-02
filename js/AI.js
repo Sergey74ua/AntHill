@@ -1,7 +1,7 @@
-//Симулятор колонии муравьев
+// Симулятор колонии муравьев
 
 class RI {
-    //Рандомный интеллект
+    // Рандомный интеллект
     select(ant) {
         if (ant.life<=0)
             return Action.dead;
@@ -11,52 +11,52 @@ class RI {
 }
 
 class PI {
-    //Программируемый интеллект
+    // Программируемый интеллект
     select(ant) {
-        //Смерть - если жизни нет
+        // Смерть - если жизни нет
         if (ant.life<=0)
             return Action.dead;
-        //Осмотреться, если нет цели /////////////////////
+        // Осмотреться, если нет цели /////////////////////
         else if (false && !ant.listTarget.random)
             return Action.view;
-        //Поворот на цель ////////////////////////////////
+        // Поворот на цель ////////////////////////////////
         else if (false && ant.target && Math.abs(ant.angle-ant.getAngle(ant.pos, ant.target))>3.0)
             return Action.turn;
-        //Подход - если видна цель
+        // Подход - если видна цель
         else if (ant.target && model.delta(ant.pos, ant.target)>=10/ant.speed)
             return Action.move;
-        //Сброс - если есть корм и тебя атакует враг (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
+        // Сброс - если есть корм и тебя атакует враг (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
         else if (/*ant.load instanceof Rock || */(ant.load && ant.target instanceof Ant && ant.target.color!=ant.color && ant.target.life>0))
             return Action.drop;
-        //Атака - если тебя атакуют или рядом чужой муравей с кормом (КАК ОН АТАКУЕТ САМ ???)
+        // Атака - если тебя атакуют или рядом чужой муравей с кормом (КАК ОН АТАКУЕТ САМ ???)
         else if (ant.target instanceof Ant && ant.target.color!=ant.color)
             return Action.kick;
-        //Выгрузка в муравейник
+        // Выгрузка в муравейник
         else if (ant.load && ant.target instanceof Colony)
             return Action.fund;
-        //Сбор - если нет корма и рядом корм (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
+        // Сбор - если нет корма и рядом корм (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
         else if (!ant.load && (ant.target instanceof Food /*|| ant.target instanceof Rock*/))
             return Action.grab;
-        //Возврат - если есть корм
+        // Возврат - если есть корм
         else if (ant.load instanceof Food)
             return Action.back;
-        //Поиск - если нет корма и нет других задач
+        // Поиск - если нет корма и нет других задач
         else if (!ant.load)
             return Action.find;
-        //Обучение - если в контакте с союзником (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
+        // Обучение - если в контакте с союзником (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
         else if (!ant.load && ant.target instanceof Ant && ant.target.color==ant.color)
             return Action.info;
-        //Танец - к примеру, если одолел противника /////////////////////////////////
+        // Танец - к примеру, если одолел противника /////////////////////////////////
         else if (ant.target instanceof Ant && ant.target.life<1)
             return Action.flex;
-        //Ожидание - все прочее
+        // Ожидание - все прочее
         else
             return Action.wait;
     }
 }
 
 class AI {
-    //Искуственный интеллект (нейросеть)
+    // Искуственный интеллект (нейросеть)
     constructor() {
         input={
             run: 0,
@@ -94,7 +94,7 @@ class AI {
     }
 
     select(ant) {
-        //Смерть - если жизни нет
+        // Смерть - если жизни нет
         /*if (ant.life<=0)
             return Action.dead;*/
         ant.action=Action.listAction[getAct(ant)];

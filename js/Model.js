@@ -1,4 +1,4 @@
-//Симулятор колонии муравьев
+// Симулятор колонии муравьев
 
 class Model {
     //Базовая модель
@@ -19,9 +19,9 @@ class Model {
         this.init();
     }
 
-    //Инициализация карты
+    // Инициализация карты
     init() {
-        //Карты
+        // Карты
         for (let x=0; x<this.size.width; x++) {
             this.map[x]=[];
             this.air[x]=[];
@@ -31,7 +31,7 @@ class Model {
                 this.newBlock({x: x, y: y});
             }
         }
-        //Колонии
+        // Колонии
         for (let i=0; i<this.base; i++) {
             let section=Math.PI*2/this.base*i-Math.PI/2+Math.PI/this.base*((this.base+1)%2);
             let radius=Math.min(this.size.width, this.size.height);
@@ -45,13 +45,10 @@ class Model {
             this.listColony.push(colony);
             this.map[colony.pos.x][colony.pos.y]=colony;
         }
-        //Камни
-        for (let i=0; i<this.base*25; i++) {
-            let rock=new Rock(this.randPos());
-            this.listRock.push(rock);
-            this.map[rock.pos.x][rock.pos.y]=rock;
-        }
-        //Корм
+        // Камни
+        for (let i=0; i<this.base*25; i++)
+            this.newRock(this.randPos());
+        // Корм
         for (let i=0; i<this.base*50; i++)
             if (i%2>0)
                 this.newFood(this.randPos());
@@ -59,7 +56,7 @@ class Model {
                 this.newFood(this.randPos({x: this.size.width/2, y: this.size.height/2}, 100));
     }
 
-    //Обновление
+    // Обновление
     update() {
         for (let colony of this.listColony)
             if (colony.weight && colony.weight<100 && colony.listAnt.length<1) {
@@ -68,7 +65,7 @@ class Model {
                 colony.weight=false;
             } else
                 colony.update();
-        //Испарение меток
+        // Испарение меток
         let listLabel=[];
         for (let label of this.listLabel) {
             label.update();
@@ -82,7 +79,7 @@ class Model {
         this.listLabel=listLabel;
     }
 
-    //Добавление блоков
+    // Добавление блоков
     newBlock(pos) {
         let border=1;
         if ((pos.x<border || pos.x>=(this.size.width-border)) ||
@@ -93,14 +90,21 @@ class Model {
         }
     }
 
-    //Добавление корма
+    // Добавление камня
+    newRock(pos) {
+        let rock=new Rock(pos);
+        this.listRock.push(rock);
+        this.map[rock.pos.x][rock.pos.y]=rock;
+    }
+
+    // Добавление корма
     newFood(pos, weight=Math.round(Math.random()*128)+128) {
         let food=new Food(pos, weight);
         this.listFood.push(food);
         this.map[food.pos.x][food.pos.y]=food;
     }
 
-    //Удаление корма
+    // Удаление корма
     delFood() {
         let listFood=[];
         for (let food of this.listFood) {
@@ -114,7 +118,7 @@ class Model {
         this.listFood=listFood;
     }
     
-    //Добавление метки
+    // Добавление метки
     newLabel(color, pos) {
         if (!this.air[pos.x][pos.y]) {
             let label=new Label(color, pos);
@@ -129,7 +133,7 @@ class Model {
             this.air[pos.x][pos.y].weight--;
     }
 
-    //Случайная позиция
+    // Случайная позиция
     randPos(pos={x: this.size.width/2, y: this.size.height/2}, range=Math.max(this.size.width, this.size.height)) {
         let sector=this.getSector(pos, range);
         while (this.map[pos.x][pos.y]!==false) {
@@ -142,7 +146,7 @@ class Model {
         return pos;
     }
 
-    //Границы сектора
+    // Границы сектора
     getSector(pos, range) {
         return {
             left: Math.max(pos.x-range, 0),
@@ -152,29 +156,18 @@ class Model {
         };
     }
 
-    //Округление координат позиции
+    // Округление координат позиции
     roundPos(pos) {
         return {x: Math.round(pos.x), y: Math.round(pos.y)};
     }
 
-    //Расстояние до цели
+    // Расстояние до цели
     delta(pos, target) {
         return Math.sqrt(Math.pow(target.pos.x-pos.x, 2)+Math.pow(target.pos.y-pos.y, 2));
     }
 }
 
 /*
-//Сохранение игры (ДОРАБОТАТЬ)
-save() {
-    var blob=new Blob(["Тестовый текст ..."],
-        {type: "text/plain; charset=utf-8"});
-    saveAs(blob, "save_"+new Date().toJSON().slice(0,10)+".txt");
-}
-
-//Загрузка игры (ДОРАБОТАТЬ)
-load() {
-    ;
-}
 
 ПРОВЕРКА ТОЧКИ НА ВХОЖДЕНИЕ В КАНВАС
 if (ctx.isPointInPath(20,50)) {
@@ -182,7 +175,6 @@ if (ctx.isPointInPath(20,50)) {
 };
 
 ТЗ детям:
-- vision + memory = air.
 - Действие Сброс.
 - Действие Атака.
 - Случайный диапазон таймера.
