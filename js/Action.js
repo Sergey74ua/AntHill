@@ -3,9 +3,9 @@
 class Action {
     // Действия муравья
     static listAction=[
-        Action.dead,
-        Action.view,
-        Action.turn,
+        //Action.dead,
+        //Action.view,
+        //Action.turn,
         Action.move,
         Action.drop,
         Action.kick,
@@ -51,16 +51,19 @@ class Action {
     static move(ant) {
         ant.run=true;
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed-10/ant.speed);
+        ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed-10);
     }
 
     static drop(ant) {
         ant.run=false;
-        model.newFood(ant.pos, ant.load.weight); // а если был камень?
-        ant.timer=ant.randDelay(ant.delay);
+        if (ant.load instanceof Food)
+            model.newFood(model.randPos(ant.pos, 4), ant.load.weight);
+        else if (ant.load instanceof Rock)
+            model.newRock(model.randPos(ant.pos, 4));
         ant.load=false;
+        ant.timer=ant.randDelay(ant.delay);
         ant.speed=1.0;
-        ant.target=false;
+        //ant.target=false;
     }
 
     static kick(ant) {
@@ -108,10 +111,10 @@ class Action {
         else
             ant.target=ant.listTarget.random;
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed-10/ant.speed);
+        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed-10);
     }
 
-    static find(ant) {
+    static find(ant) { // НУЖНО ПРОТЕСТИРОВАТЬ МЕТКИ И ДРУГОЕ
         ant.run=true;
         if (ant.listTarget.food)
             ant.target=ant.listTarget.food;
@@ -126,7 +129,7 @@ class Action {
         else
             ant.target=ant.listTarget.random;
         ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed-10/ant.speed);
+        ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed-10);
     }
 
     static info(ant) {

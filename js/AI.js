@@ -58,57 +58,71 @@ class PI {
 class AI {
     // Искуственный интеллект (нейросеть)
     constructor() {
-        input={
-            run: 0,
-            life: 1,
-            loss: 0,
-            food: 0,
-            rock: 0,
-            dead: 0,
-            drop: 0,
-            kick: 0,
-            grab: 0,
-            move: 0,
-            back: 0,
-            find: 0,
-            info: 0,
-            flex: 0,
-            wait: 0,
-            tgFood: 0,
-            tgRock: 0,
-            tgHill: 0,
-            tgAlly: 0,
-            tgEnemy: 0,
-            vsFood: 0,
-            vsRock: 0,
-            vsHill: 0,
-            vsAlly: 0,
-            vsEnemy: 0,
-            arFoodMin: 0,
-            arFoodMax: 0,
-            arAllyMin: 0,
-            arAllyMax: 0,
-            arEnemyMin: 0,
-            arEnemyMax: 0
-        };
+        // Входящая нада
+        this.inputNodes = new Array(11);
+        // Промежуточные ноды
+        this.hidenNodes1 = new Array(8);
+        this.hidenNodes2 = new Array(12);
+        // Исходящая нода (move, drop, kick, fund, grab, back, find, info, flex, wait)
+        this.outputNodes=new Array(10);
     }
 
+    init(ant) {
+        for (let i=0; i<this.inputNodes.length; i++)
+            console.log('inputNodes - ', i);
+        for (let i=0; i<this.hidenNodes1.length; i++)
+            console.log('hidenNodes1 - ', i);
+        for (let i=0; i<this.hidenNodes2.length; i++)
+            console.log('hidenNodes2 - ', i);
+        for (let i=0; i<this.outputNodes.length; i++)
+            console.log('outputNodes - ', i);
+    }
+
+    // Выбор действия
     select(ant) {
         // Смерть - если жизни нет
-        /*if (ant.life<=0)
-            return Action.dead;*/
-        ant.action=Action.listAction[getAct(ant)];
+        if (ant.life<=0)
+            return Action.dead;
+        else {
+            // Инициализация и нормировка входящей ноды
+            this.normInput(ant);
+            // Цикл по нодам
+            for (let node in ant.nn) {
+                // Рассчет синаптических связей ноды
+                this.synapse(ant);
+                // Нормировка ноды
+                this.normal();
+            };
+            ////////////////////////////////////////////////////////////////////
+            this.outputNodes=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0];
+            return Action.listAction[this.outputNodes.indexOf(Math.max(...this.outputNodes))];
+        }
     }
 
-    getAct(ant) {
-        let neron=[
-            n1=ant.life,
-            n2=ant.food,
-            n3=ant.run,
-            n4=ant.target,
-            n5=ant.action,
-            n6=ant.listTarget //////////////////
+    // Нормировка входящих данных
+    normInput(ant) {
+        this.inputNodes=[
+            ant.life/=100,
+            !!ant.target,
+            !!ant.listTarget.colony,
+            !!ant.listTarget.ally,
+            !!ant.listTarget.alien,
+            !!ant.listTarget.food,
+            !!ant.listTarget.rock,
+            !!ant.listTarget.labFood,
+            !!ant.listTarget.labAnt,
+            ant.load instanceof Food,
+            ant.load instanceof Rock,
         ];
-        return neron.n1;
-    };
+    }
+
+    // Рассчет синаптических связей
+    synapse(ant) {
+        ;
+    }
+
+    // Нормировка ноды
+    normal() {
+        ;
+    }
 }

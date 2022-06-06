@@ -5,8 +5,6 @@ class Ant {
     constructor(colony) {
         this.color=colony.color;
         this.pos=model.randPos(colony.pos, 4);
-        this.ai=colony.ai;
-        // веса нейронов
         this.life=100.0;
         this.load=false;
         this.speed=1.0;
@@ -21,6 +19,15 @@ class Ant {
         this.action=Action.wait;
         this.listTarget=this.vision();
         this.score=0;
+        this.ai=colony.ai;
+        if (this.ai instanceof AI) {
+            this.nn={ //////////////////////////////////
+                w_1: new Array(11), // [11*8],
+                w_2: new Array(8),  // [8*12],
+                w_3: new Array(12)  // [12*10]
+            };
+            this.ai.init(this);
+        }
     }
 
     // Обновление
@@ -111,13 +118,18 @@ class Ant {
         ctx.shadowOffsetY=0;
         // Информация
         if (control.info) {
-            // Диапазон всего обзора
-            ctx.strokeStyle='Lime';
-            ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
             // Информация муравья
             ctx.fillStyle=this.color;
             ctx.font="7pt Arial";
             ctx.fillText(this.action.name+' '+this.timer, x, y-16);
+            // Диапазон всего обзора
+            ctx.strokeStyle='Lime';
+            ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
+            // Цель
+            if (this.target) {
+                ctx.fillStyle='White';
+                ctx.fillText('+', this.target.pos.x, this.target.pos.y);
+            }
         }
     }
     
@@ -154,10 +166,10 @@ class Ant {
         // Видимые
         if (point instanceof Colony && point.color==this.color)
             this.listTarget.colony=point;
-        else if (!this.listTarget.food && point instanceof Food)
-            this.listTarget.food=point;
         else if (point instanceof Rock)
             this.listTarget.rock=point;
+        else if (!this.listTarget.food && point instanceof Food)
+            this.listTarget.food=point;
         else if (point instanceof Ant) {
             if (point.color==this.color && point.score>this.listTarget.ally.score)
                 this.listTarget.ally=point;
