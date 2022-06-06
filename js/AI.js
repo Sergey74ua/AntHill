@@ -56,26 +56,26 @@ class PI {
 }
 
 class AI {
+    countIn=11; // life, target, 7 listTarget, food, rock
+    countA=8;
+    countB=12;
+    countOut=10; // move, drop, kick, fund, grab, back, find, info, flex, wait
+
     // Искуственный интеллект (нейросеть)
     constructor() {
         // Входящая нада
-        this.inputNodes = new Array(11);
+        this.inputNodes=this.fillNodes(this.countIn);
         // Промежуточные ноды
-        this.hidenNodes1 = new Array(8);
-        this.hidenNodes2 = new Array(12);
-        // Исходящая нода (move, drop, kick, fund, grab, back, find, info, flex, wait)
-        this.outputNodes=new Array(10);
+        this.hidenNodesA=this.fillNodes(this.countA);
+        this.hidenNodesB=this.fillNodes(this.countB);
+        // Исходящая нода
+        this.outputNodes=this.fillNodes(this.countOut);
     }
 
-    init(ant) {
-        for (let i=0; i<this.inputNodes.length; i++)
-            console.log('inputNodes - ', i);
-        for (let i=0; i<this.hidenNodes1.length; i++)
-            console.log('hidenNodes1 - ', i);
-        for (let i=0; i<this.hidenNodes2.length; i++)
-            console.log('hidenNodes2 - ', i);
-        for (let i=0; i<this.outputNodes.length; i++)
-            console.log('outputNodes - ', i);
+    init(ant) { //Заполняем веса рандомами
+        ant.nn.in_a=this.randSynapse(this.countIn, this.countA);
+        ant.nn.a_b=this.randSynapse(this.countA, this.countB);
+        ant.nn.b_out=this.randSynapse(this.countB, this.countOut);
     }
 
     // Выбор действия
@@ -87,14 +87,13 @@ class AI {
             // Инициализация и нормировка входящей ноды
             this.normInput(ant);
             // Цикл по нодам
-            for (let node in ant.nn) {
+            for (let node in ant.nn) { /////////////////////////////
                 // Рассчет синаптических связей ноды
-                this.synapse(ant);
+                this.synapse(ant); /////////////////////////////
                 // Нормировка ноды
-                this.normal();
+                this.normal(); /////////////////////////////
             };
-            ////////////////////////////////////////////////////////////////////
-            this.outputNodes=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0];
+            this.outputNodes[6]=0.9999; //////////////////////////////////////////////////////
             return Action.listAction[this.outputNodes.indexOf(Math.max(...this.outputNodes))];
         }
     }
@@ -114,6 +113,26 @@ class AI {
             ant.load instanceof Food,
             ant.load instanceof Rock,
         ];
+    }
+
+    // Инициализация ноды
+    fillNodes(count) {
+        let nodes=[];
+        for (let i=0; i<count; i++)
+            nodes[i]=0.0;
+        return nodes;
+    }
+
+    // Рандомные веса синапсов
+    randSynapse(root, branch) {
+        let node=[];
+        for (let i=0; i<root; i++) {
+            node[i]=[];
+            for (let j=0; j<branch; j++)
+                node[i][j]=Math.random();
+        }
+        console.log(node); /////////////////////////////
+        return node;
     }
 
     // Рассчет синаптических связей
