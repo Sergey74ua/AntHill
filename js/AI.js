@@ -136,9 +136,9 @@ class AI {
     synapse(start, weight, finish) {
         console.log('start', start);
         console.log('finish', finish);
-        for (let i=0; i<finish.length; i++)
-            for (let j=0; j<start.length; j++)
-                finish[i]+=start[j]*weight[i][j];
+        for (let i=0; i<start.length; i++)
+            for (let j=0; j<finish.length; j++)
+                finish[j]+=start[i]*weight[i][j];
         return finish;
     }
 
