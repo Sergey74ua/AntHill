@@ -21,11 +21,7 @@ class Ant {
         this.score=0;
         this.ai=colony.ai;
         if (this.ai instanceof AI) {
-            this.nn={ //////////////////////////////////
-                w_1: new Array(11), // [11*8],
-                w_2: new Array(8),  // [8*12],
-                w_3: new Array(12)  // [12*10]
-            };
+            this.nn={in_a: [], a_b: [], b_out: []};
             this.ai.init(this);
         }
     }

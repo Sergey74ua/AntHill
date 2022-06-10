@@ -84,15 +84,13 @@ class AI {
         if (ant.life<=0)
             return Action.dead;
         else {
-            // Инициализация и нормировка входящей ноды
             this.normInput(ant);
-            // Цикл по нодам
-            for (let node in ant.nn) { /////////////////////////////
-                // Рассчет синаптических связей ноды
-                this.synapse(ant); /////////////////////////////
-                // Нормировка ноды
-                this.normal(); /////////////////////////////
-            };
+            this.hidenNodesA=this.synapse(this.inputNodes, ant.nn.in_a, this.hidenNodesA);
+            this.hidenNodesA=this.normal(this.hidenNodesA);
+            this.hidenNodesA=this.synapse(this.hidenNodesA, ant.nn.a_b, this.hidenNodesB);
+            this.hidenNodesA=this.normal(this.hidenNodesB);
+            this.hidenNodesA=this.synapse(this.hidenNodesB, ant.nn.b_out, this.outputNodes);
+            this.hidenNodesA=this.normal(this.outputNodes);
             this.outputNodes[6]=0.9999; //////////////////////////////////////////////////////
             return Action.listAction[this.outputNodes.indexOf(Math.max(...this.outputNodes))];
         }
@@ -131,17 +129,20 @@ class AI {
             for (let j=0; j<branch; j++)
                 node[i][j]=Math.random();
         }
-        console.log(node); /////////////////////////////
         return node;
     }
 
     // Рассчет синаптических связей
-    synapse(ant) {
-        ;
+    synapse(start, weight, finish) {
+        for (let i=0; i<start.length; i++)
+            for (let j=0; j<finish.length; j++)
+                finish weight;
+        return finish;
     }
 
     // Нормировка ноды
-    normal() {
-        ;
+    normal(nodes) {
+        //Math.exp()
+        // e**x/(1+e**x);
     }
 }
