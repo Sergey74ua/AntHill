@@ -49,9 +49,11 @@ class Action {
     }
 
     static move(ant) {
-        ant.run=true;
-        ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed-10);
+        if (ant.target) {
+            ant.angle=ant.getAngle(ant.pos, ant.target);
+            ant.timer=Math.round(model.delta(ant.pos, ant.target)/ant.speed-10);
+            ant.run=true;
+        }
     }
 
     static drop(ant) {
@@ -67,38 +69,44 @@ class Action {
     }
 
     static kick(ant) {
+        if (ant.target instanceof Ant && ant.target.color!=this.color) {
+            ant.listTarget.alien=ant.target;
+            ant.angle=ant.getAngle(ant.pos, ant.target);
+            ant.target.life-=10;
+            ant.score+=100;
+        }
         ant.run=false;
-        ant.listTarget.alien=ant.target;
-        ant.angle=ant.getAngle(ant.pos, ant.target);
-        ant.target.life-=10;
         // Анимация атаки
-        ant.score+=100;
         ant.timer=ant.randDelay(ant.delay);
         ant.target=false;
     }
 
     static fund(ant) {
+        if (ant.load instanceof Food) {
+            ant.timer=ant.load.weight;
+            ant.target.weight+=ant.load.weight;
+            ant.score+=50;
+            ant.load=false;
+        }
         ant.run=false;
-        ant.timer=ant.load.weight;
-        ant.target.weight+=ant.load.weight;
         ant.life=100;
-        ant.score+=50;
-        ant.load=false;
         ant.speed=1.0;
         ant.target=false;
     }
 
     static grab(ant) {
+        if (ant.target instanceof Food) {
+            let food=Math.min(ant.target.weight, Math.floor(ant.life*0.5+Math.random()*ant.life*0.5));
+            ant.target.weight-=food;
+            ant.load=new Food(ant.pos, food);
+            ant.speed=1.0-food/200;
+            ant.timer=food;
+            ant.score+=50;
+            if (ant.target.weight<1)
+                model.delFood();
+        }
         ant.run=false;
-        let food=Math.min(ant.target.weight, Math.floor(ant.life*0.5+Math.random()*ant.life*0.5));
-        ant.target.weight-=food;
-        ant.load=new Food(ant.pos, food);
-        ant.speed=1.0-food/200;
-        ant.timer=food;
-        ant.score+=50;
         ant.life=100;
-        if (ant.target.weight<1)
-            model.delFood();
         ant.target=false;
     }
 
@@ -133,13 +141,15 @@ class Action {
     }
 
     static info(ant) {
-        ant.run=false;
-        ant.listTarget.ally=ant.target;
-        ant.angle=ant.getAngle(ant.pos, ant.target);
-        if (ant.score>ant.target.score*1.3) {
-            // Копирование весов нейронов себе
-            ant.score+=20;
+        if (ant.target instanceof Ant && ant.target.color==this.color) {
+            ant.listTarget.ally=ant.target;
+            ant.angle=ant.getAngle(ant.pos, ant.target);
+            if (ant.score>ant.target.score*1.3) {
+                // Копирование весов нейронов себе
+                ant.score+=20;
+            }
         }
+        ant.run=false;
         ant.timer=ant.randDelay(ant.delay*2);
     }
 
