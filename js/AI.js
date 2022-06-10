@@ -64,12 +64,12 @@ class AI {
     // Искуственный интеллект (нейросеть)
     constructor() {
         // Входящая нада
-        this.inputNodes=this.fillNodes(this.countIn);
+        this.nodeIn=this.fillNodes(this.countIn);
         // Промежуточные ноды
-        this.hidenNodesA=this.fillNodes(this.countA);
-        this.hidenNodesB=this.fillNodes(this.countB);
+        this.node_A=this.fillNodes(this.countA);
+        this.node_B=this.fillNodes(this.countB);
         // Исходящая нода
-        this.outputNodes=this.fillNodes(this.countOut);
+        this.nodeOut=this.fillNodes(this.countOut);
     }
 
     init(ant) { //Заполняем веса рандомами
@@ -85,14 +85,14 @@ class AI {
             return Action.dead;
         else {
             this.normInput(ant);
-            this.hidenNodesA=this.synapse(this.inputNodes, ant.nn.in_a, this.hidenNodesA);
-            this.hidenNodesA=this.normal(this.hidenNodesA);
-            this.hidenNodesA=this.synapse(this.hidenNodesA, ant.nn.a_b, this.hidenNodesB);
-            this.hidenNodesA=this.normal(this.hidenNodesB);
-            this.hidenNodesA=this.synapse(this.hidenNodesB, ant.nn.b_out, this.outputNodes);
-            this.hidenNodesA=this.normal(this.outputNodes);
-            this.outputNodes[6]=0.9999; //////////////////////////////////////////////////////
-            return Action.listAction[this.outputNodes.indexOf(Math.max(...this.outputNodes))];
+            this.node_A=this.synapse(this.nodeIn, ant.nn.in_a, this.node_A);
+            this.node_A=this.normal(this.node_A);
+            this.node_B=this.synapse(this.node_A, ant.nn.a_b, this.node_B);
+            this.node_B=this.normal(this.node_B);
+            this.nodeOut=this.synapse(this.node_B, ant.nn.b_out, this.nodeOut);
+            this.nodeOut=this.normal(this.nodeOut);
+            this.nodeOut[6]=9.999; ///////////////////////////////////////////////////
+            return Action.listAction[this.nodeOut.indexOf(Math.max(...this.nodeOut))];
         }
     }
 
@@ -134,15 +134,20 @@ class AI {
 
     // Рассчет синаптических связей
     synapse(start, weight, finish) {
-        for (let i=0; i<start.length; i++)
-            for (let j=0; j<finish.length; j++)
-                finish weight;
+        console.log('start', start);
+        console.log('finish', finish);
+        for (let i=0; i<finish.length; i++)
+            for (let j=0; j<start.length; j++)
+                finish[i]+=start[j]*weight[i][j];
         return finish;
     }
 
     // Нормировка ноды
-    normal(nodes) {
-        //Math.exp()
-        // e**x/(1+e**x);
+    normal(nodes) { // Math.exp()**x/(1+Math.exp()**x);
+        let maxi=Math.max(...nodes);
+        maxi=1/maxi;
+        for (let i=0; i>nodes.length; i++)
+            nodes[i]*=maxi;
+        return nodes;
     }
 }
