@@ -13,7 +13,7 @@ class Colony {
         this.weight=food;
         this.pos=pos;
         this.color=this.getColor(i);
-        this.ai=new AI();
+        this.ai=new PI();
         this.listAnt=[];
         this.delay=200;
         this.timer=this.delay/4;

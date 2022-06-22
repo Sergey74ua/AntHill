@@ -10,10 +10,12 @@ class Control {
         this.btnPlay=document.getElementById('play');
         this.btnClear=document.getElementById('clear');
         this.btnSave=document.getElementById('save');
+        //this.btnLoad = document.getElementById('load');
         this.btnPlay.addEventListener('click', this.play.bind(this));
         this.btnClear.addEventListener('click', this.clear.bind(this));
         this.btnSave.addEventListener('click', this.save.bind(this));
-
+        //this.btnLoad.addEventListener('click', this.load.bind(this));
+        
         onclick=(e) => this.onClick(e);
         onkeydown=(e) => this.onKeyDown(e);
         setInterval(() => this.update(), 1000/FPS);
@@ -70,7 +72,7 @@ class Control {
     // Кнопка сохранения (ДОРАБОТАТЬ)
     save() {
         this.focus=true;
-        console.log('Кнопка Save');
+        console.log('Кнопка Save'); ////
         var blob=new Blob([
             "Тестовый текст ..."
         ], {type: "text/plain; charset=utf-8"});
@@ -79,9 +81,27 @@ class Control {
 
     // Загрузка игры (ДОРАБОТАТЬ)
     load() {
-        ;
-    }
+        this.focus=true;
+        console.log('Кнопка Load'); ////
 
+        let file=e.target.files;
+        let script=document.createElement('script');
+        script.type='application/javascript';
+        script.src='save/'+file+'.js';
+        document.body.appendChild(script);
+    }
+    /*
+    const fileUploader = document.getElementById('file-uploader');
+
+    fileUploader.addEventListener('change', (event) => {
+        const files = event.target.files;
+        console.log('files', files);
+        
+        const feedback = document.getElementById('feedback');
+        const msg = `File ${files[0].name} uploaded successfully!`;
+        feedback.innerHTML = msg;
+    });
+    */
     // Функция старт/пауза
     btnName() {
         if (this.game)
