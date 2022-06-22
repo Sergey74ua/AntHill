@@ -72,11 +72,13 @@ class Control {
     // Кнопка сохранения (ДОРАБОТАТЬ)
     save() {
         this.focus=true;
-        console.log('Кнопка Save'); ////
         var blob=new Blob([
-            "Тестовый текст ..."
+            //отобрать веса нейросетей лучших юнитов.
+            "save_NN="+JSON.stringify(model.listColony[0].listAnt[0].nn)
         ], {type: "text/plain; charset=utf-8"});
-        saveAs(blob, "save_"+new Date().toJSON().slice(0,10)+".txt");
+        let file="save_00.js"; //"save_"+new Date().toJSON().slice(0,10)+".txt"
+        saveAs(blob, file);
+        console.log('Файл '+file+' сохранен.');
     }
 
     // Загрузка игры (ДОРАБОТАТЬ)
@@ -89,6 +91,7 @@ class Control {
         script.type='application/javascript';
         script.src='save/'+file+'.js';
         document.body.appendChild(script);
+        console.log('Файл '+file+' загружен.');
     }
     /*
     const fileUploader = document.getElementById('file-uploader');
