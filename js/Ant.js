@@ -3,8 +3,9 @@
 class Ant {
     // Муравей
     constructor(colony) {
-        this.color=colony.color;
-        this.pos=model.randPos(colony.pos, 4);
+        this.colony=colony;
+        this.color=this.colony.color;
+        this.pos=model.randPos(this.colony.pos, 4);
         this.life=100.0;
         this.load=false;
         this.speed=1.0;
@@ -19,7 +20,7 @@ class Ant {
         this.action=Action.wait;
         this.listTarget=this.vision();
         this.score=0;
-        this.ai=colony.ai;
+        this.ai=this.colony.ai;
         if (this.ai instanceof AI) {
             this.nn={in_a: [], a_b: [], b_out: []};
             this.ai.init(this);
@@ -153,7 +154,18 @@ class Ant {
                 this.memory(model.map[sector.right][j], model.air[sector.right][j]);
             };
         };
-        this.listTarget.random={pos: model.randPos(this.pos, this.range)};
+        if (!this.load)
+            this.listTarget.random={pos: model.randPos(this.pos, this.range)};
+        else {
+            let dCol=model.delta(this.pos, this.colony);
+            let dRnd=dCol;
+            let limit=5;
+            while (dCol<=dRnd && limit>0) {
+                this.listTarget.random={pos: model.randPos(this.pos, this.range)};
+                dRnd=model.delta(this.listTarget.random.pos, this.colony);
+                limit--;
+            }
+        }
         return this.listTarget;
     }
 
