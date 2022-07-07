@@ -159,7 +159,7 @@ class Ant {
         else {
             let dCol=model.delta(this.pos, this.colony);
             let dRnd=dCol;
-            let limit=5;
+            let limit=2;
             while (dCol<=dRnd && limit>0) {
                 this.listTarget.random={pos: model.randPos(this.pos, this.range)};
                 dRnd=model.delta(this.listTarget.random.pos, this.colony);
