@@ -64,7 +64,7 @@ class Action {
             model.newRock(model.randPos(ant.pos, 4));
         ant.load=false;
         ant.timer=ant.randDelay(ant.delay);
-        ant.speed=1.0;
+        ant.speed=2.0;
         //ant.target=false;
     }
 
@@ -74,6 +74,10 @@ class Action {
             ant.angle=ant.getAngle(ant.pos, ant.target);
             ant.target.life-=10;
             ant.score+=100;
+            if (ant.target.life<=0) {
+                ant.frag+=1;
+                ant.score+=1000;
+            }
         }
         ant.run=false;
         // Анимация атаки
@@ -90,7 +94,7 @@ class Action {
         }
         ant.run=false;
         ant.life=100;
-        ant.speed=1.0;
+        ant.speed=2.0;
         ant.target=false;
     }
 
@@ -99,7 +103,7 @@ class Action {
             let food=Math.min(ant.target.weight, Math.floor(ant.life*0.5+Math.random()*ant.life*0.5));
             ant.target.weight-=food;
             ant.load=new Food(ant.pos, food);
-            ant.speed=1.0-food/200;
+            ant.speed=2.0-food/200;
             ant.timer=food;
             ant.score+=50;
             if (ant.target.weight<1)
@@ -114,7 +118,7 @@ class Action {
         ant.run=true;
         if (ant.listTarget.colony)
             ant.target=ant.listTarget.colony;
-        else if (ant.listTarget.labAnt)
+        else if (ant.listTarget.labAnt && Math.round(Math.random()*0.7)) ///////////////
             ant.target=ant.listTarget.labAnt;
         else
             ant.target=ant.listTarget.random;
@@ -130,7 +134,7 @@ class Action {
             ant.target=ant.listTarget.alien;
         else if (ant.listTarget.labFood)
             ant.target=ant.listTarget.labFood;
-        else if (ant.listTarget.ally)
+        else if (ant.ai instanceof AI && ant.listTarget.ally)
             ant.target=ant.listTarget.ally;
         else if (ant.listTarget.rock && Math.round(Math.random()*0.5))
             ant.target=ant.listTarget.rock;

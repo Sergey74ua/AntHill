@@ -26,7 +26,7 @@ class PI {
         else if (ant.target && model.delta(ant.pos, ant.target)>=10/ant.speed)
             return Action.move;
         // Сброс - если есть корм и тебя атакует враг (МОЖЕТ РАЗДЕЛИТЬ ПО РАЗНЫМ ПУНКТАМ?)
-        else if (/*ant.load instanceof Rock || */(ant.load && ant.target instanceof Ant && ant.target.color!=ant.color && ant.target.life>0))
+        else if (ant.load instanceof Rock || (ant.load && ant.target instanceof Ant && ant.target.color!=ant.color && ant.target.life>0))
             return Action.drop;
         // Атака - если тебя атакуют или рядом чужой муравей с кормом (КАК ОН АТАКУЕТ САМ ???)
         else if (ant.target instanceof Ant && ant.target.color!=ant.color)

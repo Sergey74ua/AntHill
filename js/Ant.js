@@ -8,7 +8,7 @@ class Ant {
         this.pos=model.randPos(this.colony.pos, 4);
         this.life=100.0;
         this.load=false;
-        this.speed=1.0;
+        this.speed=2.0;
         this.step=1/this.speed*5;
         this.run=false;
         this.pose=false;
@@ -20,6 +20,7 @@ class Ant {
         this.action=Action.wait;
         this.listTarget=this.vision();
         this.score=0;
+        this.frag=0; /////////////////////////////
         this.ai=this.colony.ai;
         if (this.ai instanceof AI) {
             this.nn={in_a: [], a_b: [], b_out: []};
@@ -120,8 +121,8 @@ class Ant {
             ctx.font="7pt Arial";
             ctx.fillText(this.action.name+' '+this.timer, x, y-16);
             // Диапазон всего обзора
-            ctx.strokeStyle='Lime';
-            ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
+            //ctx.strokeStyle='Lime';
+            //ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
             // Цель
             if (this.target) {
                 ctx.fillStyle='White';
@@ -154,6 +155,7 @@ class Ant {
                 this.memory(model.map[sector.right][j], model.air[sector.right][j]);
             };
         };
+        // Помогаем вернуться к муравейнику
         if (!this.load)
             this.listTarget.random={pos: model.randPos(this.pos, this.range)};
         else {
@@ -186,10 +188,10 @@ class Ant {
         }
         // По запаху
         if (smell instanceof Label) {
-            if (smell.color==Food.color && smell.weight<this.listTarget.labFood.weight)
+            if (smell.color==Food.color && (!this.listTarget.labFood || smell.weight<this.listTarget.labFood.weight))
                 this.listTarget.labFood=smell;
-            else if (smell.color==this.color && smell.weight>this.listTarget.labAnt.weight)
-                this.listTarget.labAnt=smell; //НУЖНО ИСКЛЮЧИТЬ СВОЙ СЛЕД
+            else if (smell.color==this.color && (!this.listTarget.labAnt || smell.weight<this.listTarget.labAnt.weight))
+                this.listTarget.labAnt=smell; //НУЖНО ИСКЛЮЧИТЬ СВОЙ СЛЕД*/
         }
     }
 
