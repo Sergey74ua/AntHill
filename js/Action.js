@@ -78,6 +78,7 @@ class Action {
                 ant.frag+=1;
                 ant.score+=1000;
             }
+            console.log('АТАКА - ', ant.target.load); //////////////////
         }
         ant.run=false;
         // Анимация атаки
@@ -132,7 +133,7 @@ class Action {
             ant.target=ant.listTarget.food;
         else if (ant.listTarget.alien)
             ant.target=ant.listTarget.alien;
-        else if (ant.listTarget.labFood)
+        else if (ant.listTarget.labFood && Math.round(Math.random()*1.5))
             ant.target=ant.listTarget.labFood;
         else if (ant.ai instanceof AI && ant.listTarget.ally)
             ant.target=ant.listTarget.ally;
