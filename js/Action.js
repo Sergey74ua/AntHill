@@ -133,11 +133,11 @@ class Action {
             ant.target=ant.listTarget.food;
         else if (ant.listTarget.alien)
             ant.target=ant.listTarget.alien;
-        else if (ant.listTarget.labFood && Math.round(Math.random()*1.5))
+        else if (ant.listTarget.labFood && Math.round(Math.random()*1.2))
             ant.target=ant.listTarget.labFood;
         else if (ant.ai instanceof AI && ant.listTarget.ally)
             ant.target=ant.listTarget.ally;
-        else if (ant.listTarget.rock && Math.round(Math.random()*0.5))
+        else if (ant.listTarget.rock && Math.round(Math.random()))
             ant.target=ant.listTarget.rock;
         else
             ant.target=ant.listTarget.random;

@@ -184,16 +184,14 @@ class Ant {
             // Свои муравьи
             if (point.color==this.color)
                 if (!this.listTarget.alien && point.target instanceof Ant && point.target.color!=this.color)
-                    this.listTarget.alien=point;
-                /*else if (point.score>this.listTarget.ally.score)
-                    this.listTarget.ally=point;*/
+                    this.listTarget.alien=point; // НЕ РАБОТАЕТ. У СОЮЗНИКА НЕТ ТАРГЕТА НА ЧУЖОГО
                 else if (point.life<20)
                     this.listTarget.ally=point;
+                /*else if (point.score>this.listTarget.ally.score)
+                    this.listTarget.ally=point;*/
             // Чужие муравьи
             else
-                if (point.load instanceof Food)
-                    this.listTarget.alien=point;
-                else if (!this.listTarget.alien && Math.round(Math.random()*0.5))
+                if (!this.listTarget.alien && (point.load instanceof Food || Math.round(Math.random()*0.75)))
                     this.listTarget.alien=point;
         }
         // По запаху

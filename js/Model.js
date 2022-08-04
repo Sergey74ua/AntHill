@@ -8,7 +8,7 @@ class Model {
             height: window.innerHeight
         };
         this.base=BASE;
-        this.food=399;
+        this.food=256;
         this.map=[];
         this.air=[];
         this.listBlock=[];
@@ -50,10 +50,10 @@ class Model {
             this.newRock(this.randPos());
         // Корм
         for (let i=0; i<this.base*100; i++)
-            if (false && i%2>0) ////////////////////////////////////////////////
-                this.newFood(this.randPos());
-            else
+            if (i%5>0)
                 this.newFood(this.randPos({x: this.size.width/2, y: this.size.height/2}, 100));
+            else
+                this.newFood(this.randPos());
     }
 
     // Обновление
