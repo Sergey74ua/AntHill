@@ -70,7 +70,7 @@ class Action {
 
     static kick(ant) {
         if (ant.target instanceof Ant && ant.target.color!=this.color) {
-            ant.listTarget.alien=ant.target;
+            ant.listTarget.alien=ant;
             ant.angle=ant.getAngle(ant.pos, ant.target);
             ant.target.life-=10;
             ant.score+=100;
@@ -78,7 +78,6 @@ class Action {
                 ant.frag+=1;
                 ant.score+=1000;
             }
-            console.log('АТАКА - ', ant.target.load); //////////////////
         }
         ant.run=false;
         // Анимация атаки
@@ -119,7 +118,7 @@ class Action {
         ant.run=true;
         if (ant.listTarget.colony)
             ant.target=ant.listTarget.colony;
-        else if (ant.listTarget.labAnt && Math.round(Math.random()*0.7)) ///////////////
+        else if (ant.listTarget.labAnt && Math.round(Math.random()*1.5))
             ant.target=ant.listTarget.labAnt;
         else
             ant.target=ant.listTarget.random;
@@ -127,17 +126,17 @@ class Action {
         ant.timer=Math.floor(model.delta(ant.pos, ant.target)/ant.speed-10);
     }
 
-    static find(ant) { // НУЖНО ПРОТЕСТИРОВАТЬ МЕТКИ И ДРУГОЕ
+    static find(ant) {
         ant.run=true;
         if (ant.listTarget.food)
             ant.target=ant.listTarget.food;
         else if (ant.listTarget.alien)
             ant.target=ant.listTarget.alien;
-        else if (ant.listTarget.labFood && Math.round(Math.random()*1.2))
+        else if (ant.listTarget.labFood && Math.round(Math.random()*1.5))
             ant.target=ant.listTarget.labFood;
         else if (ant.ai instanceof AI && ant.listTarget.ally)
             ant.target=ant.listTarget.ally;
-        else if (ant.listTarget.rock && Math.round(Math.random()))
+        else if (ant.listTarget.rock && Math.round(Math.random()*0.55))
             ant.target=ant.listTarget.rock;
         else
             ant.target=ant.listTarget.random;

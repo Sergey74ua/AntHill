@@ -50,7 +50,7 @@ class Model {
             this.newRock(this.randPos());
         // Корм
         for (let i=0; i<this.base*100; i++)
-            if (i%5>0)
+            if (i%10>0)
                 this.newFood(this.randPos({x: this.size.width/2, y: this.size.height/2}, 100));
             else
                 this.newFood(this.randPos());
@@ -166,17 +166,3 @@ class Model {
         return Math.sqrt(Math.pow(target.pos.x-pos.x, 2)+Math.pow(target.pos.y-pos.y, 2));
     }
 }
-
-/*
-
-ПРОВЕРКА ТОЧКИ НА ВХОЖДЕНИЕ В КАНВАС
-if (ctx.isPointInPath(20,50)) {
-    ctx.stroke();
-};
-
-ТЗ детям:
-- Действие Сброс.
-- Действие Атака.
-- Случайный диапазон таймера.
-- AI ...
-*/

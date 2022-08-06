@@ -20,7 +20,7 @@ class Ant {
         this.action=Action.wait;
         this.listTarget=this.vision();
         this.score=0;
-        this.frag=0; /////////////////////////////
+        this.frag=0;
         this.ai=this.colony.ai;
         if (this.ai instanceof AI) {
             this.nn={in_a: [], a_b: [], b_out: []};
@@ -121,8 +121,8 @@ class Ant {
             ctx.font="7pt Arial";
             ctx.fillText(this.action.name+' '+this.timer, x, y-16);
             // Диапазон всего обзора
-            //ctx.strokeStyle='Lime';
-            //ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
+            ctx.strokeStyle='Lime';
+            ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
             // Цель
             if (this.target) {
                 ctx.fillStyle='White';
@@ -161,7 +161,7 @@ class Ant {
         else {
             let dCol=model.delta(this.pos, this.colony);
             let dRnd=dCol;
-            let limit=2;
+            let limit=3;
             while (dCol<=dRnd && limit>0) {
                 this.listTarget.random={pos: model.randPos(this.pos, this.range)};
                 dRnd=model.delta(this.listTarget.random.pos, this.colony);
@@ -181,18 +181,25 @@ class Ant {
         else if (!this.listTarget.food && point instanceof Food)
             this.listTarget.food=point;
         else if (point instanceof Ant) {
+            /*if (point.color==this.color && point.score>this.listTarget.ally.score)
+                this.listTarget.ally=point;
+            else if (point.color!=this.color && point.load instanceof Food)
+                this.listTarget.alien=point;*/
             // Свои муравьи
-            if (point.color==this.color)
-                if (!this.listTarget.alien && point.target instanceof Ant && point.target.color!=this.color)
-                    this.listTarget.alien=point; // НЕ РАБОТАЕТ. У СОЮЗНИКА НЕТ ТАРГЕТА НА ЧУЖОГО
-                else if (point.life<20)
+            if (point.color==this.color) {
+                if (point.life<20)
                     this.listTarget.ally=point;
-                /*else if (point.score>this.listTarget.ally.score)
+                /*else if (!this.listTarget.alien && point.target instanceof Ant && point.target.color!=this.color)
+                    this.listTarget.alien=point; // НЕ РАБОТАЕТ. У СОЮЗНИКА НЕТ ТАРГЕТА НА ЧУЖОГО
+                else if (point.score>this.listTarget.ally.score)
                     this.listTarget.ally=point;*/
             // Чужие муравьи
-            else
-                if (!this.listTarget.alien && (point.load instanceof Food || Math.round(Math.random()*0.75)))
+            } else {
+                if (!this.listTarget.alien && point.load instanceof Food)
                     this.listTarget.alien=point;
+                else if (!this.listTarget.alien && Math.round(Math.random()*0.55))
+                    this.listTarget.alien=point;
+            }
         }
         // По запаху
         if (smell instanceof Label) {
