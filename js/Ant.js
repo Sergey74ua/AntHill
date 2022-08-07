@@ -119,7 +119,7 @@ class Ant {
             // Информация муравья
             ctx.fillStyle=this.color;
             ctx.font="7pt Arial";
-            ctx.fillText(this.action.name+' '+this.timer, x, y-16);
+            ctx.fillText(this.action.name+' '+this.frag+' '+this.life.toFixed(1), x, y-16);
             // Диапазон всего обзора
             ctx.strokeStyle='Lime';
             ctx.strokeRect(x-this.range, y-this.range, this.range*2, this.range*2);
@@ -174,7 +174,7 @@ class Ant {
     // Запоминаем объекты
     memory(point, smell) {
         // Видимые
-        if (point instanceof Colony && point.color==this.color)
+        if (point instanceof Colony && (point.color==this.color || point.color=='#00000060'))
             this.listTarget.colony=point;
         else if (point instanceof Rock)
             this.listTarget.rock=point;

@@ -49,11 +49,11 @@ class Food extends Items {
     draw(ctx) {
         super.draw(ctx);
         // Информация
-        /*if (control.info) {
+        if (control.info) {
             ctx.fillStyle='black';
             ctx.font="6pt Arial";
             ctx.fillText(this.weight, this.pos.x, this.pos.y-5);
-        }*/
+        }
     }
 }
 

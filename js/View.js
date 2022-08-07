@@ -6,15 +6,18 @@ class View {
         this.canvas=document.getElementById('canvas');
         this.onResize();
         window.addEventListener('resize', this.onResize);
+        this.soundGrab=new Audio('files/grab.ogg');
+        this.soundKick=new Audio('files/kick.mp3');
+        this.soundDead=new Audio('files/dead.mp3');
     }
 
     // Отрисовка экрана
     draw() {
         this.ctx.fillStyle='DarkGreen';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        for (let label of model.listLabel)
-            label.draw(this.ctx);
+        //if (control.info)
+            for (let label of model.listLabel)
+                label.draw(this.ctx);
 
         for (let block of model.listBlock)
             block.draw(this.ctx);

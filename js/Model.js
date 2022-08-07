@@ -28,7 +28,7 @@ class Model {
             for (let y=0; y<this.size.height; y++) {
                 this.map[x][y]=false;
                 this.air[x][y]=false;
-                this.newBlock({x: x, y: y});
+                //this.newBlock({x: x, y: y}); ////////
             }
         }
         // Колонии
@@ -46,11 +46,11 @@ class Model {
             this.map[colony.pos.x][colony.pos.y]=colony;
         }
         // Камни
-        for (let i=0; i<this.base*25; i++)
+        for (let i=0; i<this.base*10; i++)
             this.newRock(this.randPos());
         // Корм
-        for (let i=0; i<this.base*100; i++)
-            if (i%10>0)
+        for (let i=0; i<this.base*20; i++)
+            if (i%8>0)
                 this.newFood(this.randPos({x: this.size.width/2, y: this.size.height/2}, 100));
             else
                 this.newFood(this.randPos());
@@ -61,7 +61,7 @@ class Model {
         for (let colony of this.listColony)
             if (colony.weight && colony.weight<100 && colony.listAnt.length<1) {
                 colony.color='#00000060';
-                this.newFood(this.randPos(colony.pos, 4), colony.weight);
+                this.newFood(this.randPos(colony.pos, 16), colony.weight);
                 colony.weight=false;
             } else
                 colony.update();

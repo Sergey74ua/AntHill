@@ -69,12 +69,14 @@ class Action {
     }
 
     static kick(ant) {
-        if (ant.target instanceof Ant && ant.target.color!=this.color) {
+        if (ant.target instanceof Ant && ant.target.color!=this.color && ant.target.life>0) {
+            view.soundKick.play();
             ant.listTarget.alien=ant;
             ant.angle=ant.getAngle(ant.pos, ant.target);
             ant.target.life-=10;
             ant.score+=100;
             if (ant.target.life<=0) {
+                view.soundDead.play();
                 ant.frag+=1;
                 ant.score+=1000;
             }
@@ -87,6 +89,13 @@ class Action {
 
     static fund(ant) {
         if (ant.load instanceof Food) {
+            if (ant.target.color=='#00000060') {
+                let capture=ant.target;
+                capture.color=ant.color;
+                ant.colony=capture;
+                capture.loss=0;
+                capture.listAnt.push(ant);
+            }
             ant.timer=ant.load.weight;
             ant.target.weight+=ant.load.weight;
             ant.score+=50;
@@ -100,6 +109,7 @@ class Action {
 
     static grab(ant) {
         if (ant.target instanceof Food) {
+            view.soundGrab.play();
             let food=Math.min(ant.target.weight, Math.floor(ant.life*0.5+Math.random()*ant.life*0.5));
             ant.target.weight-=food;
             ant.load=new Food(ant.pos, food);

@@ -4,7 +4,7 @@ class Colony {
     // Палитра по умолчанию
     pallet=[
         'SaddleBrown',
-        'OrangeRed',
+        'Grey',
         'Olive',
         'Maroon'
     ];
@@ -36,7 +36,7 @@ class Colony {
             if (ant.timer<(ant.delay*-10)) {
                 model.newFood(model.randPos(ant.pos, 4), 100);
                 this.loss++;
-            } else {
+            } else if (ant.colony==this) {
                 listAnt.push(ant);
                 ant.update();
             }
