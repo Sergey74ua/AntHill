@@ -26,6 +26,7 @@ class Colony {
         if (this.weight>100)
             this.timer--;
             if (this.timer<0) {
+                view.soundBirth.play();
                 this.listAnt.push(new Ant(this));
                 this.weight-=100;
                 this.timer=this.delay;

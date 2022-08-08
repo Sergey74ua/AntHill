@@ -90,6 +90,7 @@ class Action {
     static fund(ant) {
         if (ant.load instanceof Food) {
             if (ant.target.color=='#00000060') {
+                view.soundCapture.play();
                 let capture=ant.target;
                 capture.color=ant.color;
                 ant.colony=capture;

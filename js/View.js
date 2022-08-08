@@ -6,9 +6,11 @@ class View {
         this.canvas=document.getElementById('canvas');
         this.onResize();
         window.addEventListener('resize', this.onResize);
+        this.soundBirth=new Audio('files/birth.mp3');
         this.soundGrab=new Audio('files/grab.ogg');
         this.soundKick=new Audio('files/kick.mp3');
         this.soundDead=new Audio('files/dead.mp3');
+        this.soundCapture=new Audio('files/capture.mp3');
     }
 
     // Отрисовка экрана
