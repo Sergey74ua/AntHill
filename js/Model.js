@@ -51,7 +51,7 @@ class Model {
         // Корм
         for (let i=0; i<this.base*20; i++)
             if (i%8>0)
-                this.newFood(this.randPos({x: this.size.width/2, y: this.size.height/2}, 100));
+                this.newFood(this.randPos({x: parseInt(this.size.width/2), y: parseInt(this.size.height/2)}, 100));
             else
                 this.newFood(this.randPos());
     }
